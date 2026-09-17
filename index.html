@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Auvenda connects learners with training centres, training providers and industry experts.">
 <title>Auvenda — Hero animation</title>
 <link rel="preconnect" href="https://raw.githubusercontent.com">
 <style>
@@ -10,89 +11,129 @@
   --navy:#11293e;
   --blue:#1e4a66;
   --gold:#d0a839;
+  --ink:#09141c;
   --white:#fff;
   --container-max:1240px;
   --pattern:url("https://raw.githubusercontent.com/tcsavant/maritime-training-platform-landing/main/assets/auvenida/pattern.svg");
 }
+
+@font-face{
+  font-family:Inter;
+  src:url("https://raw.githubusercontent.com/tcsavant/maritime-training-platform-landing/main/assets/auvenida/fonts/Inter-Regular.ttf") format("truetype");
+  font-weight:400;
+  font-display:swap;
+}
+
+@font-face{
+  font-family:Inter;
+  src:url("https://raw.githubusercontent.com/tcsavant/maritime-training-platform-landing/main/assets/auvenida/fonts/Inter-Medium.ttf") format("truetype");
+  font-weight:500;
+  font-display:swap;
+}
+
+@font-face{
+  font-family:Inter;
+  src:url("https://raw.githubusercontent.com/tcsavant/maritime-training-platform-landing/main/assets/auvenida/fonts/Inter-SemiBold.ttf") format("truetype");
+  font-weight:600 700;
+  font-display:swap;
+}
+
+@font-face{
+  font-family:"IBM Plex Serif";
+  src:url("https://raw.githubusercontent.com/tcsavant/maritime-training-platform-landing/main/assets/auvenida/fonts/IBMPlexSerif-SemiBold.ttf") format("truetype");
+  font-weight:600;
+  font-display:swap;
+}
+
 *{box-sizing:border-box}
+html{scroll-behavior:smooth}
 html,body{margin:0}
-body{font:400 16px/1.55 Inter,Arial,sans-serif;background:#fff;color:#09141c}
+body{font:400 16px/1.55 Inter,Arial,sans-serif;background:var(--white);color:var(--ink)}
+a{color:inherit;text-decoration:none}
+button{font:inherit}
 .container{width:min(var(--container-max),calc(100% - 80px));margin:auto}
+.skip-link{position:absolute;left:-999px}
+.skip-link:focus{left:20px;top:20px;z-index:100;background:#fff;padding:10px}
 
-/* Header — dimensions/layout from the current landing */
 .brand-header{
+  position:absolute;
+  top:0;
+  left:0;
+  width:100%;
+  z-index:80;
+  display:block;
   height:82px;
-  padding:0 max(40px,calc((100vw - 1240px)/2));
-  display:flex;align-items:center;
-  background:var(--blue);color:#fff;
-  position:relative;z-index:10;
+  min-height:82px;
+  padding:0;
+  color:#fff;
+  background:var(--navy);
 }
-.header-container{width:100%;display:flex;align-items:center;gap:30px}
-.brand{display:inline-flex;align-items:center;gap:10px;line-height:1;text-decoration:none}
-.brand-logo{display:block;width:94px;height:auto}
-.brand-divider{width:1px;height:26px;background:rgba(255,255,255,.38)}
-.brand-descriptor{font-size:8px;font-weight:600;letter-spacing:.02em;line-height:1.25}
-.primary-menu{display:flex;gap:30px;margin-left:auto}
-.primary-menu a{color:#fff;text-decoration:none;font-size:14px;font-weight:500}
-.primary-menu a:hover{color:var(--gold)}
-.header-actions{display:flex;align-items:center;gap:20px}
-.language-switcher{display:flex}
-.language-switcher button{
-  border:0;border-right:1px solid rgba(255,255,255,.3);cursor:pointer;
-  background:transparent;padding:2px 8px;color:#fff;font:500 14px Inter,Arial,sans-serif
-}
-.language-switcher button:last-child{border-right:0}
-.language-switcher button.active{font-weight:700;text-decoration:underline;text-underline-offset:4px}
-.button{
-  border:1px solid transparent;min-height:48px;padding:0 19px;display:inline-flex;
-  align-items:center;justify-content:center;gap:26px;font-size:14px;font-weight:700;
-  text-decoration:none;transition:transform .2s,background .2s
-}
-.button:hover{transform:translateY(-2px)}
-.button-gold{color:var(--navy);background:var(--gold)}
-.button-light{color:var(--navy);background:#fff}
-.button span{font-size:17px}
-.menu-toggle{display:none}
 
-/* Hero — same structure/metrics as current landing */
+.brand-header .header-container{
+  display:grid;
+  grid-template-columns:1fr auto 1fr;
+  align-items:center;
+  gap:30px;
+  width:min(var(--container-max),calc(100% - 80px));
+  height:82px;
+  margin-inline:auto;
+}
+
+.brand-header .brand{display:inline-flex;justify-self:start;align-items:center;gap:10px;color:#fff;line-height:1;text-decoration:none}
+.brand-logo-picture{display:block;line-height:0}
+.brand-header .brand-logo{display:block;width:94px;height:auto}
+.brand-header .brand-divider{width:1px;height:26px;background:rgba(255,255,255,.38)}
+.brand-header .brand-descriptor{color:#fff;font-size:14px;font-weight:600;line-height:1.25}
+.brand-header nav{display:flex;justify-self:center;align-items:stretch;height:82px;margin:0}
+.brand-header nav a{display:flex;align-items:center;height:82px;padding:0 15px;color:#fff;font-size:14px;font-weight:500;text-decoration:none}
+.brand-header nav a:hover{color:var(--gold)}
+.brand-header .header-actions{display:flex;justify-self:end;align-items:center;gap:20px}
+.brand-header .header-contact{display:inline-flex;min-height:48px;padding:0 19px;align-items:center;justify-content:center;color:var(--navy);background:var(--gold);white-space:nowrap;font-size:14px;font-weight:700;transition:transform .2s,background .2s}
+.brand-header .header-contact:hover{transform:translateY(-2px)}
+.brand-header .language-switcher{position:relative;display:flex}
+.brand-header .language-switcher button{border:0;border-right:1px solid rgba(255,255,255,.3);cursor:pointer;background:transparent;padding:2px 8px;color:#fff;font:500 14px Inter,Arial,sans-serif}
+.brand-header .language-switcher button:last-of-type{border-right:0}
+.brand-header .language-switcher button.active{font-weight:700;text-decoration:underline;text-underline-offset:4px}
+.brand-header .menu-button{display:none}
+
 .hero{
-  height:calc(100vh - 82px);min-height:668px;
-  display:flex;align-items:center;overflow:hidden;
-  position:relative;isolation:isolate;color:#fff;background:var(--blue);
+  height:100vh;
+  min-height:750px;
+  display:flex;
+  align-items:center;
+  overflow:hidden;
+  position:relative;
+  isolation:isolate;
+  color:#fff;
+  background:#1e4a66 var(--pattern) center/cover no-repeat;
 }
-.pattern-base,.pattern-light{
-  position:absolute;inset:0;pointer-events:none;
-  -webkit-mask-image:var(--pattern);mask-image:var(--pattern);
-  -webkit-mask-position:center;mask-position:center;
-  -webkit-mask-size:cover;mask-size:cover;
-  -webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;
-}
-.pattern-base{
-  z-index:-3;background:linear-gradient(180deg,rgba(169,209,255,.74),rgba(30,74,102,.74));
-  opacity:.82;
-}
+
 .pattern-light{
-  z-index:-2;opacity:0;
-  background:
-    radial-gradient(circle at 50% 50%,
-      rgba(255,255,255,1) 0 1.4%,
-      rgba(229,195,99,.98) 2.2%,
-      rgba(169,209,255,.88) 4%,
-      rgba(169,209,255,.34) 8%,
-      transparent 15%);
-  filter:drop-shadow(0 0 5px rgba(229,195,99,.8))
-         drop-shadow(0 0 12px rgba(169,209,255,.7));
+  position:absolute;
+  inset:0;
+  z-index:0;
+  pointer-events:none;
+  opacity:0;
+  -webkit-mask-image:var(--pattern);
+  mask-image:var(--pattern);
+  -webkit-mask-position:center;
+  mask-position:center;
+  -webkit-mask-size:cover;
+  mask-size:cover;
+  -webkit-mask-repeat:no-repeat;
+  mask-repeat:no-repeat;
+  background:radial-gradient(circle at 50% 50%,rgba(255,255,255,1) 0 1.4%,rgba(229,195,99,.98) 2.2%,rgba(169,209,255,.88) 4%,rgba(169,209,255,.34) 8%,transparent 15%);
+  filter:drop-shadow(0 0 5px rgba(229,195,99,.8)) drop-shadow(0 0 12px rgba(169,209,255,.7));
   animation:signalA 8s cubic-bezier(.42,0,.58,1) infinite;
 }
+
 .pattern-light.b{
   animation:signalB 10.5s cubic-bezier(.42,0,.58,1) -4.2s infinite;
-  filter:drop-shadow(0 0 4px rgba(255,255,255,.75))
-         drop-shadow(0 0 11px rgba(169,209,255,.62));
+  filter:drop-shadow(0 0 4px rgba(255,255,255,.75)) drop-shadow(0 0 11px rgba(169,209,255,.62));
 }
-.pattern-light.c{
-  animation:signalC 12s cubic-bezier(.42,0,.58,1) -7.5s infinite;
-  opacity:0;
-}
+
+.pattern-light.c{animation:signalC 12s cubic-bezier(.42,0,.58,1) -7.5s infinite}
+
 @keyframes signalA{
   0%,7%{background-position:-25vw 18vh;opacity:0}
   12%{opacity:.9}
@@ -100,6 +141,7 @@ body{font:400 16px/1.55 Inter,Arial,sans-serif;background:#fff;color:#09141c}
   82%{background-position:115vw 70vh;opacity:.72}
   90%,100%{background-position:125vw 75vh;opacity:0}
 }
+
 @keyframes signalB{
   0%,10%{background-position:108vw -8vh;opacity:0}
   16%{opacity:.72}
@@ -107,6 +149,7 @@ body{font:400 16px/1.55 Inter,Arial,sans-serif;background:#fff;color:#09141c}
   82%{background-position:12vw 82vh;opacity:.58}
   92%,100%{background-position:-18vw 100vh;opacity:0}
 }
+
 @keyframes signalC{
   0%,12%{background-position:20vw 105vh;opacity:0}
   18%{opacity:.55}
@@ -114,89 +157,153 @@ body{font:400 16px/1.55 Inter,Arial,sans-serif;background:#fff;color:#09141c}
   82%{background-position:86vw 6vh;opacity:.45}
   92%,100%{background-position:100vw -20vh;opacity:0}
 }
-/* subtle bloom only where the pattern is lit */
-.hero::after{
-  content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
-  background:radial-gradient(ellipse at 50% 52%,transparent 0 30%,rgba(17,41,62,.07) 66%,rgba(17,41,62,.18) 100%);
-}
+
 .hero-grid{
-  display:grid;grid-template-columns:minmax(0,1fr);
-  align-items:end;gap:60px;padding:138px 0 90px;
+  position:relative;
+  z-index:1;
+  display:grid;
+  grid-template-columns:minmax(0,1fr);
+  align-items:end;
+  gap:60px;
+  padding:220px 0 90px;
 }
+
 .kicker{margin:0 0 24px;color:var(--gold);font-size:14px;font-weight:700;letter-spacing:.15em}
-.hero h1{
-  margin:0;font-family:"IBM Plex Serif",Georgia,serif;font-weight:600;
-  font-size:clamp(32px,7vw,96px);line-height:.95;letter-spacing:-.05em
-}
+.hero h1{margin:0;font-family:"IBM Plex Serif",Georgia,serif;font-weight:600;font-size:clamp(32px,7vw,96px);line-height:.95;letter-spacing:-.05em}
 .hero-lead{max-width:470px;margin:34px 0;font-size:18px;line-height:1.65;color:#dce9f5}
 .actions{display:flex;gap:26px;align-items:center;flex-wrap:wrap}
+.button{border:1px solid transparent;min-height:48px;padding:0 19px;display:inline-flex;align-items:center;justify-content:center;gap:26px;font-size:14px;font-weight:700;text-decoration:none;transition:transform .2s,background .2s}
+.button:hover{transform:translateY(-2px)}
+.button-light{color:var(--navy);background:#fff}
+.button span{font-size:17px}
 
-@media(max-width:1000px){
-  .primary-menu{display:none}
-  .menu-toggle{display:inline-flex;width:48px;height:48px;background:transparent;border:1px solid rgba(255,255,255,.35)}
-}
 @media(max-width:800px){
-  .container{width:min(100% - 40px,1240px)}
-  .brand-header{padding:0 20px;height:72px}
-  .brand-logo{width:78px}.brand-descriptor{display:none}.brand-divider{display:none}
-  .header-contact{display:none}.language-switcher{display:none}
-  .header-actions{margin-left:auto}
-  .hero{height:auto;min-height:calc(100svh - 72px)}
-  .hero-grid{padding:110px 0 72px}
-  .hero h1{font-size:clamp(48px,13vw,76px)}
-  .hero-lead{font-size:16px;max-width:92%}
+  :root{--mobile-header-height:66px}
+  body.mobile-menu-open{position:fixed;width:100%;overflow:hidden}
+  .container{width:min(var(--container-max),calc(100% - 40px))}
+  .brand-header{height:66px;min-height:66px;background:var(--navy)}
+  .brand-header .header-container{grid-template-columns:minmax(0,1fr) auto;gap:8px;width:min(var(--container-max),calc(100% - 32px));height:66px}
+  .brand-header .brand{min-width:0}
+  .brand-header .brand-logo{width:82px;max-height:43px}
+  .brand-header .brand-divider,.brand-header .brand-descriptor{display:none}
+  .brand-header nav{display:none;position:fixed;z-index:90;top:66px;right:0;bottom:0;left:0;width:100vw;height:calc(100dvh - 66px);padding:24px 20px;flex-direction:column;align-items:stretch;overflow-y:auto;background:var(--blue);border-top:1px solid rgba(255,255,255,.22)}
+  .brand-header nav.mobile-open{display:flex}
+  .brand-header nav a{width:100%;min-height:56px;height:auto;padding:0;border-bottom:1px solid rgba(255,255,255,.22);font-size:15px}
+  .brand-header .header-actions{gap:8px}
+  .brand-header .language-switcher{width:48px;min-height:40px;border:1px solid rgba(255,255,255,.45)}
+  .brand-header .language-switcher>button{display:none;width:48px;min-height:40px;padding:0;align-items:center;justify-content:center;border:0;background:var(--blue)}
+  .brand-header .language-switcher>button.active{display:flex;position:relative;color:var(--navy);background:var(--gold);text-decoration:none}
+  .brand-header .language-switcher.is-open>button{display:flex;position:absolute;z-index:2;right:-1px;width:48px;border:1px solid rgba(255,255,255,.38)}
+  .brand-header .language-switcher.is-open>button:nth-of-type(1){top:-1px}
+  .brand-header .language-switcher.is-open>button:nth-of-type(2){top:39px}
+  .brand-header .language-switcher.is-open>button:nth-of-type(3){top:79px}
+  .brand-header .header-contact{min-height:40px;padding:0 14px}
+  .brand-header .menu-button{display:flex;width:40px;min-width:40px;height:40px;min-height:40px;padding:0;border:0;flex-direction:column;align-items:center;justify-content:center;gap:5px;color:#fff;background:transparent;cursor:pointer}
+  .brand-header .menu-button span{display:block;width:20px;height:2px;background:currentColor;transition:transform .2s ease,opacity .2s ease}
+  .brand-header .menu-button[aria-expanded="true"] span:first-child{transform:translateY(7px) rotate(45deg)}
+  .brand-header .menu-button[aria-expanded="true"] span:nth-child(2){opacity:0}
+  .brand-header .menu-button[aria-expanded="true"] span:last-child{transform:translateY(-7px) rotate(-45deg)}
+  .hero{height:auto;min-height:fit-content;padding:40px 0}
+  .hero-grid{padding-block:40px}
 }
+
+@media(max-width:380px){
+  .brand-header .header-contact{padding-inline:10px;font-size:12px}
+  .brand-header .brand-logo{width:74px}
+}
+
 @media(prefers-reduced-motion:reduce){
   .pattern-light{display:none}
 }
 </style>
 </head>
 <body>
+<a class="skip-link" href="#content">Skip to content</a>
 <header class="brand-header">
   <div class="container header-container">
-    <a class="brand" href="#">
-      <img class="brand-logo"
-        src="https://raw.githubusercontent.com/tcsavant/maritime-training-platform-landing/main/assets/auvenida/logo.svg"
-        alt="Auvenda">
-      <span class="brand-divider"></span>
+    <a class="brand" href="#top" aria-label="Auvenda home">
+      <picture class="brand-logo-picture">
+        <source media="(max-width:800px)" srcset="https://raw.githubusercontent.com/tcsavant/maritime-training-platform-landing/main/assets/auvenida/logo–.svg">
+        <img class="brand-logo" src="https://raw.githubusercontent.com/tcsavant/maritime-training-platform-landing/main/assets/auvenida/logo.svg" alt="Auvenda">
+      </picture>
+      <span class="brand-divider" aria-hidden="true"></span>
       <span class="brand-descriptor">Maritime<br>Training Platform</span>
     </a>
-    <nav class="primary-menu">
-      <a href="#">Courses</a>
-      <a href="#">Training Providers</a>
-      <a href="#">For Companies</a>
-      <a href="#">About</a>
+    <nav class="primary-menu" id="primary-menu" aria-label="Main navigation">
+      <a href="https://tcsavant.github.io/maritime-training-platform-landing/courses.html#courses/all">Courses</a>
+      <a href="#providers">Training Providers</a>
+      <a href="#companies">For Companies</a>
+      <a href="#about">About</a>
     </nav>
     <div class="header-actions">
-      <div class="language-switcher">
-        <button class="active">EN</button><button>RU</button><button>УКР</button>
+      <div class="language-switcher" aria-label="Language selector">
+        <button class="active" type="button" aria-pressed="true" data-language="en">EN</button>
+        <button type="button" aria-pressed="false" data-language="ru">RU</button>
+        <button type="button" aria-pressed="false" data-language="uk">УКР</button>
       </div>
-      <a class="button button-gold header-contact" href="#">Contact</a>
-      <button class="menu-toggle" aria-label="Menu">☰</button>
+      <a class="header-contact" href="#contact">Contact</a>
+      <button class="menu-button" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="primary-menu">
+        <span></span><span></span><span></span>
+      </button>
     </div>
   </div>
 </header>
-
-<main>
-<section class="hero">
-  <!-- The exact pattern.svg from the live GitHub landing is used as the mask. -->
-  <div class="pattern-base"></div>
-  <div class="pattern-light"></div>
-  <div class="pattern-light b"></div>
-  <div class="pattern-light c"></div>
-
-  <div class="container hero-grid">
-    <div class="hero-copy">
-      <p class="kicker">PLATFORM FOR LEARNING AND CAREER GROWTH</p>
-      <h1>Auvenda is a global<br>digital learning platform</h1>
-      <p class="hero-lead">Auvenda connects learners with training centres, training providers and industry experts, offering professional development opportunities.</p>
-      <div class="actions">
-        <a class="button button-light" href="#">Explore Courses <span>→</span></a>
-        <a class="button button-light" href="#">Submit a Course <span>→</span></a>
+<main id="content">
+  <section class="hero" id="top">
+    <div class="pattern-light"></div>
+    <div class="pattern-light b"></div>
+    <div class="pattern-light c"></div>
+    <div class="container hero-grid">
+      <div class="hero-copy">
+        <p class="kicker">PLATFORM FOR LEARNING AND CAREER GROWTH</p>
+        <h1>Auvenda is a global<br>digital learning platform</h1>
+        <p class="hero-lead">Auvenda connects learners with training centres, training providers and industry experts, offering professional development opportunities.</p>
+        <div class="actions">
+          <a class="button button-light" href="https://tcsavant.github.io/maritime-training-platform-landing/courses.html#courses/all">Explore Courses <span>→</span></a>
+          <a class="button button-light" href="#providers">Submit a Course <span>→</span></a>
+        </div>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 </main>
+<script>
+const menuButton=document.querySelector('.menu-button');
+const nav=document.querySelector('.primary-menu');
+const languageSwitcher=document.querySelector('.language-switcher');
+const languageButtons=[...languageSwitcher.querySelectorAll('button')];
+
+menuButton.addEventListener('click',()=>{
+  const open=menuButton.getAttribute('aria-expanded')==='true';
+  menuButton.setAttribute('aria-expanded',String(!open));
+  menuButton.setAttribute('aria-label',open?'Open navigation':'Close navigation');
+  nav.classList.toggle('mobile-open',!open);
+  document.body.classList.toggle('mobile-menu-open',!open);
+});
+
+nav.querySelectorAll('a').forEach(link=>link.addEventListener('click',()=>{
+  menuButton.setAttribute('aria-expanded','false');
+  menuButton.setAttribute('aria-label','Open navigation');
+  nav.classList.remove('mobile-open');
+  document.body.classList.remove('mobile-menu-open');
+}));
+
+languageButtons.forEach(button=>button.addEventListener('click',event=>{
+  if(window.innerWidth<=800&&!languageSwitcher.classList.contains('is-open')){
+    event.preventDefault();
+    languageSwitcher.classList.add('is-open');
+    return;
+  }
+  languageButtons.forEach(item=>{
+    const active=item===button;
+    item.classList.toggle('active',active);
+    item.setAttribute('aria-pressed',String(active));
+  });
+  languageSwitcher.classList.remove('is-open');
+}));
+
+document.addEventListener('click',event=>{
+  if(!languageSwitcher.contains(event.target)) languageSwitcher.classList.remove('is-open');
+});
+</script>
 </body>
 </html>
