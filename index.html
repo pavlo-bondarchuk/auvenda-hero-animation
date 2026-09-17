@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Auvenda — Hero animation</title>
+<link rel="preconnect" href="https://raw.githubusercontent.com">
+<style>
+:root{
+  --navy:#11293e;
+  --blue:#1e4a66;
+  --gold:#d0a839;
+  --white:#fff;
+  --container-max:1240px;
+  --pattern:url("https://raw.githubusercontent.com/tcsavant/maritime-training-platform-landing/main/assets/auvenida/pattern.svg");
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{font:400 16px/1.55 Inter,Arial,sans-serif;background:#fff;color:#09141c}
+.container{width:min(var(--container-max),calc(100% - 80px));margin:auto}
+
+/* Header — dimensions/layout from the current landing */
+.brand-header{
+  height:82px;
+  padding:0 max(40px,calc((100vw - 1240px)/2));
+  display:flex;align-items:center;
+  background:var(--blue);color:#fff;
+  position:relative;z-index:10;
+}
+.header-container{width:100%;display:flex;align-items:center;gap:30px}
+.brand{display:inline-flex;align-items:center;gap:10px;line-height:1;text-decoration:none}
+.brand-logo{display:block;width:94px;height:auto}
+.brand-divider{width:1px;height:26px;background:rgba(255,255,255,.38)}
+.brand-descriptor{font-size:8px;font-weight:600;letter-spacing:.02em;line-height:1.25}
+.primary-menu{display:flex;gap:30px;margin-left:auto}
+.primary-menu a{color:#fff;text-decoration:none;font-size:14px;font-weight:500}
+.primary-menu a:hover{color:var(--gold)}
+.header-actions{display:flex;align-items:center;gap:20px}
+.language-switcher{display:flex}
+.language-switcher button{
+  border:0;border-right:1px solid rgba(255,255,255,.3);cursor:pointer;
+  background:transparent;padding:2px 8px;color:#fff;font:500 14px Inter,Arial,sans-serif
+}
+.language-switcher button:last-child{border-right:0}
+.language-switcher button.active{font-weight:700;text-decoration:underline;text-underline-offset:4px}
+.button{
+  border:1px solid transparent;min-height:48px;padding:0 19px;display:inline-flex;
+  align-items:center;justify-content:center;gap:26px;font-size:14px;font-weight:700;
+  text-decoration:none;transition:transform .2s,background .2s
+}
+.button:hover{transform:translateY(-2px)}
+.button-gold{color:var(--navy);background:var(--gold)}
+.button-light{color:var(--navy);background:#fff}
+.button span{font-size:17px}
+.menu-toggle{display:none}
+
+/* Hero — same structure/metrics as current landing */
+.hero{
+  height:calc(100vh - 82px);min-height:668px;
+  display:flex;align-items:center;overflow:hidden;
+  position:relative;isolation:isolate;color:#fff;background:var(--blue);
+}
+.pattern-base,.pattern-light{
+  position:absolute;inset:0;pointer-events:none;
+  -webkit-mask-image:var(--pattern);mask-image:var(--pattern);
+  -webkit-mask-position:center;mask-position:center;
+  -webkit-mask-size:cover;mask-size:cover;
+  -webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;
+}
+.pattern-base{
+  z-index:-3;background:linear-gradient(180deg,rgba(169,209,255,.74),rgba(30,74,102,.74));
+  opacity:.82;
+}
+.pattern-light{
+  z-index:-2;opacity:0;
+  background:
+    radial-gradient(circle at 50% 50%,
+      rgba(255,255,255,1) 0 1.4%,
+      rgba(229,195,99,.98) 2.2%,
+      rgba(169,209,255,.88) 4%,
+      rgba(169,209,255,.34) 8%,
+      transparent 15%);
+  filter:drop-shadow(0 0 5px rgba(229,195,99,.8))
+         drop-shadow(0 0 12px rgba(169,209,255,.7));
+  animation:signalA 8s cubic-bezier(.42,0,.58,1) infinite;
+}
+.pattern-light.b{
+  animation:signalB 10.5s cubic-bezier(.42,0,.58,1) -4.2s infinite;
+  filter:drop-shadow(0 0 4px rgba(255,255,255,.75))
+         drop-shadow(0 0 11px rgba(169,209,255,.62));
+}
+.pattern-light.c{
+  animation:signalC 12s cubic-bezier(.42,0,.58,1) -7.5s infinite;
+  opacity:0;
+}
+@keyframes signalA{
+  0%,7%{background-position:-25vw 18vh;opacity:0}
+  12%{opacity:.9}
+  47%{background-position:47vw 43vh;opacity:.9}
+  82%{background-position:115vw 70vh;opacity:.72}
+  90%,100%{background-position:125vw 75vh;opacity:0}
+}
+@keyframes signalB{
+  0%,10%{background-position:108vw -8vh;opacity:0}
+  16%{opacity:.72}
+  50%{background-position:65vw 38vh;opacity:.72}
+  82%{background-position:12vw 82vh;opacity:.58}
+  92%,100%{background-position:-18vw 100vh;opacity:0}
+}
+@keyframes signalC{
+  0%,12%{background-position:20vw 105vh;opacity:0}
+  18%{opacity:.55}
+  52%{background-position:54vw 55vh;opacity:.55}
+  82%{background-position:86vw 6vh;opacity:.45}
+  92%,100%{background-position:100vw -20vh;opacity:0}
+}
+/* subtle bloom only where the pattern is lit */
+.hero::after{
+  content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
+  background:radial-gradient(ellipse at 50% 52%,transparent 0 30%,rgba(17,41,62,.07) 66%,rgba(17,41,62,.18) 100%);
+}
+.hero-grid{
+  display:grid;grid-template-columns:minmax(0,1fr);
+  align-items:end;gap:60px;padding:138px 0 90px;
+}
+.kicker{margin:0 0 24px;color:var(--gold);font-size:14px;font-weight:700;letter-spacing:.15em}
+.hero h1{
+  margin:0;font-family:"IBM Plex Serif",Georgia,serif;font-weight:600;
+  font-size:clamp(32px,7vw,96px);line-height:.95;letter-spacing:-.05em
+}
+.hero-lead{max-width:470px;margin:34px 0;font-size:18px;line-height:1.65;color:#dce9f5}
+.actions{display:flex;gap:26px;align-items:center;flex-wrap:wrap}
+
+@media(max-width:1000px){
+  .primary-menu{display:none}
+  .menu-toggle{display:inline-flex;width:48px;height:48px;background:transparent;border:1px solid rgba(255,255,255,.35)}
+}
+@media(max-width:800px){
+  .container{width:min(100% - 40px,1240px)}
+  .brand-header{padding:0 20px;height:72px}
+  .brand-logo{width:78px}.brand-descriptor{display:none}.brand-divider{display:none}
+  .header-contact{display:none}.language-switcher{display:none}
+  .header-actions{margin-left:auto}
+  .hero{height:auto;min-height:calc(100svh - 72px)}
+  .hero-grid{padding:110px 0 72px}
+  .hero h1{font-size:clamp(48px,13vw,76px)}
+  .hero-lead{font-size:16px;max-width:92%}
+}
+@media(prefers-reduced-motion:reduce){
+  .pattern-light{display:none}
+}
+</style>
+</head>
+<body>
+<header class="brand-header">
+  <div class="container header-container">
+    <a class="brand" href="#">
+      <img class="brand-logo"
+        src="https://raw.githubusercontent.com/tcsavant/maritime-training-platform-landing/main/assets/auvenida/logo.svg"
+        alt="Auvenda">
+      <span class="brand-divider"></span>
+      <span class="brand-descriptor">Maritime<br>Training Platform</span>
+    </a>
+    <nav class="primary-menu">
+      <a href="#">Courses</a>
+      <a href="#">Training Providers</a>
+      <a href="#">For Companies</a>
+      <a href="#">About</a>
+    </nav>
+    <div class="header-actions">
+      <div class="language-switcher">
+        <button class="active">EN</button><button>RU</button><button>УКР</button>
+      </div>
+      <a class="button button-gold header-contact" href="#">Contact</a>
+      <button class="menu-toggle" aria-label="Menu">☰</button>
+    </div>
+  </div>
+</header>
+
+<main>
+<section class="hero">
+  <!-- The exact pattern.svg from the live GitHub landing is used as the mask. -->
+  <div class="pattern-base"></div>
+  <div class="pattern-light"></div>
+  <div class="pattern-light b"></div>
+  <div class="pattern-light c"></div>
+
+  <div class="container hero-grid">
+    <div class="hero-copy">
+      <p class="kicker">PLATFORM FOR LEARNING AND CAREER GROWTH</p>
+      <h1>Auvenda is a global<br>digital learning platform</h1>
+      <p class="hero-lead">Auvenda connects learners with training centres, training providers and industry experts, offering professional development opportunities.</p>
+      <div class="actions">
+        <a class="button button-light" href="#">Explore Courses <span>→</span></a>
+        <a class="button button-light" href="#">Submit a Course <span>→</span></a>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+</body>
+</html>
