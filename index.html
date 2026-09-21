@@ -125,7 +125,10 @@ button{font:inherit}
 .actions{display:flex;gap:26px;align-items:center;flex-wrap:wrap}
 .button{border:1px solid transparent;min-height:48px;padding:0 19px;display:inline-flex;align-items:center;justify-content:center;gap:26px;font-size:14px;font-weight:700;text-decoration:none;transition:transform .2s,background .2s}
 .button:hover{transform:translateY(-2px)}
-.button-light{color:var(--navy);background:#fff}
+.button-primary{color:var(--navy);background:var(--gold);box-shadow:0 10px 26px rgba(9,20,28,.16)}
+.button-primary:hover{background:#ddba55}
+.button-secondary{border-color:rgba(255,255,255,.72);color:#fff;background:rgba(255,255,255,.04);backdrop-filter:blur(3px)}
+.button-secondary:hover{color:var(--navy);background:#fff;border-color:#fff}
 .button span{font-size:17px}
 
 @media(max-width:800px){
@@ -207,8 +210,8 @@ button{font:inherit}
         <h1>Auvenda is a global<br>digital learning platform</h1>
         <p class="hero-lead">Auvenda connects learners with training centres, training providers and industry experts, offering professional development opportunities.</p>
         <div class="actions">
-          <a class="button button-light" href="https://tcsavant.github.io/maritime-training-platform-landing/courses.html#courses/all">Explore Courses <span>→</span></a>
-          <a class="button button-light" href="#providers">Submit a Course <span>→</span></a>
+          <a class="button button-primary" href="https://tcsavant.github.io/maritime-training-platform-landing/courses.html#courses/all">Explore Courses <span>→</span></a>
+          <a class="button button-secondary" href="#providers">Submit a Course <span>→</span></a>
         </div>
       </div>
     </div>
