@@ -121,8 +121,17 @@ button{font:inherit}
 
 .hero::before{
   z-index:0;
-  background:radial-gradient(ellipse 250px 200px at var(--signal-x) var(--signal-y),rgba(6,22,34,.38) 0,rgba(6,22,34,.3) 25%,rgba(6,22,34,.14) 48%,rgba(6,22,34,0) 74%);
-  opacity:calc(.9 * var(--signal-opacity));
+  background:radial-gradient(
+    ellipse 760px 560px at var(--signal-x) var(--signal-y),
+    rgba(4,16,27,.28) 0,
+    rgba(4,16,27,.25) 14%,
+    rgba(4,16,27,.2) 30%,
+    rgba(4,16,27,.14) 48%,
+    rgba(4,16,27,.085) 64%,
+    rgba(4,16,27,.04) 80%,
+    rgba(4,16,27,0) 100%
+  );
+  opacity:var(--signal-opacity);
 }
 
 .hero::after{
@@ -188,53 +197,46 @@ button{font:inherit}
   border-color:var(--gold);
 }
 
-.cursor-jelly{
+.cursor-orb{
   position:fixed;
   top:0;
   left:0;
   z-index:130;
-  width:46px;
-  height:40px;
+  width:48px;
+  height:48px;
   pointer-events:none;
   opacity:0;
   transform:translate3d(-100px,-100px,0);
-  transition:opacity .18s ease;
+  transition:opacity .16s ease;
+  will-change:transform;
 }
 
-.cursor-jelly-shape{
+.cursor-orb-shape{
+  --orb-shift-x:0px;
+  --orb-shift-y:0px;
   position:absolute;
   left:50%;
   top:50%;
-  width:34px;
-  height:27px;
-  transform:translate(-50%,-50%);
-  border:1px solid rgba(255,255,255,.9);
-  border-radius:52% 48% 56% 44% / 58% 62% 38% 42%;
-  background:radial-gradient(circle at 38% 30%,#fff 0 8%,#fff4cf 16%,rgba(229,195,99,.9) 30%,rgba(169,209,255,.72) 56%,rgba(169,209,255,.16) 76%,rgba(169,209,255,0) 100%);
-  box-shadow:0 0 0 1px rgba(169,209,255,.16),0 0 16px rgba(169,209,255,.34);
-  animation:jellyMorph 1.7s ease-in-out infinite alternate;
-}
-
-.cursor-jelly-shape::after{
-  content:"";
-  position:absolute;
-  left:50%;
-  bottom:-7px;
-  width:2px;
-  height:10px;
-  border-radius:999px;
-  background:rgba(169,209,255,.72);
-  box-shadow:-8px 2px 0 rgba(169,209,255,.54),8px 1px 0 rgba(229,195,99,.46);
-  transform:translateX(-50%);
+  width:28px;
+  height:28px;
+  border:1px solid rgba(255,255,255,.88);
+  border-radius:50%;
+  background:radial-gradient(
+    circle at 42% 38%,
+    rgba(255,255,255,.98) 0 9%,
+    rgba(255,246,216,.9) 18%,
+    rgba(229,195,99,.66) 36%,
+    rgba(169,209,255,.3) 62%,
+    rgba(169,209,255,.08) 82%,
+    rgba(169,209,255,0) 100%
+  );
+  box-shadow:0 0 0 1px rgba(169,209,255,.08),0 0 14px rgba(169,209,255,.16);
+  transform:translate(calc(-50% + var(--orb-shift-x)),calc(-50% + var(--orb-shift-y)));
+  will-change:transform;
 }
 
 body.cursor-glow-enabled .hero{cursor:none}
-body.cursor-glow-enabled .cursor-jelly.is-visible{opacity:1}
-
-@keyframes jellyMorph{
-  0%{transform:translate(-50%,-50%) scale(1,.92) rotate(-3deg);border-radius:52% 48% 56% 44% / 58% 62% 38% 42%}
-  100%{transform:translate(-50%,-50%) scale(.94,1.08) rotate(3deg);border-radius:45% 55% 47% 53% / 63% 53% 47% 37%}
-}
+body.cursor-glow-enabled .cursor-orb.is-visible{opacity:1}
 
 @media(max-width:800px){
   :root{--mobile-header-height:66px}
@@ -265,6 +267,7 @@ body.cursor-glow-enabled .cursor-jelly.is-visible{opacity:1}
   .hero{height:auto;min-height:fit-content;padding:40px 0}
   .hero-grid{padding-block:40px}
   .cursor-toggle{display:none}
+  .cursor-orb{display:none}
 }
 
 @media(max-width:380px){
@@ -273,8 +276,7 @@ body.cursor-glow-enabled .cursor-jelly.is-visible{opacity:1}
 }
 
 @media(prefers-reduced-motion:reduce){
-  .hero::before,.hero::after,.cursor-toggle,.cursor-jelly{display:none}
-  .cursor-jelly-shape{animation:none}
+  .hero::before,.hero::after,.cursor-toggle,.cursor-orb{display:none}
 }
 </style>
 </head>
@@ -310,7 +312,7 @@ body.cursor-glow-enabled .cursor-jelly.is-visible{opacity:1}
   </div>
 </header>
 <button class="cursor-toggle" type="button" aria-pressed="false" aria-label="Enable cursor glow">Cursor glow</button>
-<div class="cursor-jelly" aria-hidden="true"><span class="cursor-jelly-shape"></span></div>
+<div class="cursor-orb" aria-hidden="true"><span class="cursor-orb-shape"></span></div>
 <main id="content">
   <section class="hero" id="top">
     <div class="container hero-grid">
@@ -368,7 +370,8 @@ document.addEventListener('click',event=>{
 const hero=document.querySelector('.hero');
 const heroCopy=document.querySelector('.hero-copy');
 const cursorToggle=document.querySelector('.cursor-toggle');
-const cursorJelly=document.querySelector('.cursor-jelly');
+const cursorOrb=document.querySelector('.cursor-orb');
+const cursorOrbShape=cursorOrb.querySelector('.cursor-orb-shape');
 const reducedMotion=window.matchMedia('(prefers-reduced-motion: reduce)');
 const finePointer=window.matchMedia('(pointer: fine)');
 let cursorMode=false;
@@ -387,8 +390,8 @@ function setCursorMode(enabled){
   cursorToggle.setAttribute('aria-pressed',String(cursorMode));
   cursorToggle.setAttribute('aria-label',cursorMode?'Disable cursor glow':'Enable cursor glow');
   cursorToggle.textContent=cursorMode?'Auto glow':'Cursor glow';
-  if(!cursorMode) cursorJelly.classList.remove('is-visible');
-  if(cursorMode&&pointerInside) cursorJelly.classList.add('is-visible');
+  if(!cursorMode) cursorOrb.classList.remove('is-visible');
+  if(cursorMode&&pointerInside) cursorOrb.classList.add('is-visible');
 }
 
 cursorToggle.addEventListener('click',()=>setCursorMode(!cursorMode));
@@ -397,19 +400,19 @@ hero.addEventListener('pointerenter',event=>{
   pointerInside=true;
   targetPointerX=event.clientX;
   targetPointerY=event.clientY;
-  if(cursorMode) cursorJelly.classList.add('is-visible');
+  if(cursorMode) cursorOrb.classList.add('is-visible');
 });
 
 hero.addEventListener('pointermove',event=>{
   pointerInside=true;
   targetPointerX=event.clientX;
   targetPointerY=event.clientY;
-  if(cursorMode) cursorJelly.classList.add('is-visible');
+  if(cursorMode) cursorOrb.classList.add('is-visible');
 });
 
 hero.addEventListener('pointerleave',()=>{
   pointerInside=false;
-  cursorJelly.classList.remove('is-visible');
+  cursorOrb.classList.remove('is-visible');
 });
 
 function updateSignal(time){
@@ -447,7 +450,7 @@ function updateSignal(time){
     targetX=Math.max(0,Math.min(heroRect.width,targetPointerX-heroRect.left));
     targetY=Math.max(0,Math.min(heroRect.height,targetPointerY-heroRect.top));
   }else{
-    const elapsed=time*.00011;
+    const elapsed=time*.000085;
     const centerX=(contentLeft+contentRight)*.5-heroRect.left;
     const centerY=(contentTop+contentBottom)*.5-heroRect.top;
     const radiusX=Math.min(heroRect.width*.37,(contentRight-contentLeft)*.5+110);
@@ -461,20 +464,32 @@ function updateSignal(time){
     signalY=targetY;
   }
 
-  const follow=cursorMode ? .115 : .065;
+  const follow=cursorMode ? .095 : .065;
   signalX+=(targetX-signalX)*follow;
   signalY+=(targetY-signalY)*follow;
   hero.style.setProperty('--signal-x',signalX+'px');
   hero.style.setProperty('--signal-y',signalY+'px');
 
   if(cursorMode&&pointerInside){
-    jellyX+=(targetPointerX-jellyX)*.18;
-    jellyY+=(targetPointerY-jellyY)*.18;
+    jellyX+=(targetPointerX-jellyX)*.2;
+    jellyY+=(targetPointerY-jellyY)*.2;
+
     const dx=targetPointerX-jellyX;
     const dy=targetPointerY-jellyY;
-    const angle=Math.max(-10,Math.min(10,dx*.12));
-    const stretch=Math.max(.92,Math.min(1.12,1+Math.hypot(dx,dy)*.002));
-    cursorJelly.style.transform='translate3d('+(jellyX-23)+'px,'+(jellyY-20)+'px,0) rotate('+angle+'deg) scale('+stretch+',1)';
+    const speed=Math.hypot(dx,dy);
+    const angle=Math.atan2(dy,dx)*180/Math.PI;
+    const stretch=Math.min(1.34,1+speed*.012);
+    const squash=Math.max(.78,1-speed*.006);
+    const directionX=speed?dx/speed:0;
+    const directionY=speed?dy/speed:0;
+    const inertia=Math.min(6,speed*.12);
+    const shiftX=-directionX*inertia;
+    const shiftY=-directionY*inertia;
+
+    cursorOrb.style.transform='translate3d('+(jellyX-24)+'px,'+(jellyY-24)+'px,0)';
+    cursorOrbShape.style.setProperty('--orb-shift-x',shiftX+'px');
+    cursorOrbShape.style.setProperty('--orb-shift-y',shiftY+'px');
+    cursorOrbShape.style.transform='translate(calc(-50% + '+shiftX+'px),calc(-50% + '+shiftY+'px)) rotate('+angle+'deg) scale('+stretch+','+squash+')';
   }
 
   requestAnimationFrame(updateSignal);
