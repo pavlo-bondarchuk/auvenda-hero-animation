@@ -14,7 +14,8 @@
   --ink:#09141c;
   --white:#fff;
   --container-max:1240px;
-  --pattern:url("https://raw.githubusercontent.com/tcsavant/maritime-training-platform-landing/main/assets/auvenida/pattern.svg");
+  --pattern:url("./pattern-animated.svg");
+  --pattern-static:url("https://raw.githubusercontent.com/tcsavant/maritime-training-platform-landing/main/assets/auvenida/pattern.svg");
 }
 
 @font-face{
@@ -108,63 +109,6 @@ button{font:inherit}
   background:#1e4a66 var(--pattern) center/cover no-repeat;
 }
 
-.pattern-light{
-  position:absolute;
-  inset:0;
-  z-index:0;
-  pointer-events:none;
-  opacity:0;
-  -webkit-mask-image:var(--pattern);
-  mask-image:var(--pattern);
-  -webkit-mask-position:center;
-  mask-position:center;
-  -webkit-mask-size:cover;
-  mask-size:cover;
-  -webkit-mask-repeat:no-repeat;
-  mask-repeat:no-repeat;
-  background-image:radial-gradient(circle,rgba(255,255,255,1) 0 3%,rgba(255,244,207,1) 4%,rgba(229,195,99,1) 8%,rgba(169,209,255,.96) 16%,rgba(169,209,255,.48) 28%,rgba(169,209,255,.16) 40%,transparent 54%);
-  background-size:clamp(280px,34vw,560px) clamp(280px,34vw,560px);
-  background-repeat:no-repeat;
-  mix-blend-mode:screen;
-  filter:drop-shadow(0 0 7px rgba(255,255,255,.9)) drop-shadow(0 0 18px rgba(229,195,99,.78)) drop-shadow(0 0 34px rgba(169,209,255,.68));
-  will-change:background-position,opacity;
-  animation:signalA 8s cubic-bezier(.42,0,.58,1) infinite;
-}
-
-.pattern-light.b{
-  animation:signalB 10.5s cubic-bezier(.42,0,.58,1) -4.2s infinite;
-  filter:drop-shadow(0 0 6px rgba(255,255,255,.72)) drop-shadow(0 0 15px rgba(229,195,99,.58)) drop-shadow(0 0 30px rgba(169,209,255,.56));
-}
-
-.pattern-light.c{
-  animation:signalC 12s cubic-bezier(.42,0,.58,1) -7.5s infinite;
-  filter:drop-shadow(0 0 5px rgba(255,255,255,.6)) drop-shadow(0 0 13px rgba(229,195,99,.45)) drop-shadow(0 0 26px rgba(169,209,255,.46));
-}
-
-@keyframes signalA{
-  0%,7%{background-position:-28% 16%;opacity:0}
-  12%{opacity:1}
-  47%{background-position:48% 44%;opacity:1}
-  82%{background-position:128% 72%;opacity:.86}
-  90%,100%{background-position:138% 78%;opacity:0}
-}
-
-@keyframes signalB{
-  0%,10%{background-position:130% -18%;opacity:0}
-  16%{opacity:.86}
-  50%{background-position:64% 36%;opacity:.86}
-  82%{background-position:-18% 88%;opacity:.7}
-  92%,100%{background-position:-32% 112%;opacity:0}
-}
-
-@keyframes signalC{
-  0%,12%{background-position:8% 128%;opacity:0}
-  18%{opacity:.64}
-  52%{background-position:54% 52%;opacity:.64}
-  82%{background-position:96% -12%;opacity:.54}
-  92%,100%{background-position:112% -28%;opacity:0}
-}
-
 .hero-grid{
   position:relative;
   z-index:1;
@@ -220,7 +164,7 @@ button{font:inherit}
 }
 
 @media(prefers-reduced-motion:reduce){
-  .pattern-light{display:none}
+  .hero{background-image:var(--pattern-static)}
 }
 </style>
 </head>
@@ -257,9 +201,6 @@ button{font:inherit}
 </header>
 <main id="content">
   <section class="hero" id="top">
-    <div class="pattern-light"></div>
-    <div class="pattern-light b"></div>
-    <div class="pattern-light c"></div>
     <div class="container hero-grid">
       <div class="hero-copy">
         <p class="kicker">PLATFORM FOR LEARNING AND CAREER GROWTH</p>
