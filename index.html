@@ -544,7 +544,7 @@ function updateSignal(time){
     targetY=Math.max(0,Math.min(heroRect.height,targetPointerY-heroRect.top));
   }else{
     const trajectory=getTrajectoryPoint(pathDistance,heroRect.width,heroRect.height);
-    const speed=Math.max(92,Math.min(126,heroRect.width*.075));
+    const speed=200;
     pathDistance+=speed*deltaSec;
     targetX=trajectory.x;
     targetY=trajectory.y;
