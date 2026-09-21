@@ -101,14 +101,11 @@ button{font:inherit}
   --signal-y:50%;
   --signal-opacity:1;
   --whale-x:50%;
-  --whale-y:50%;
-  --whale-angle:0deg;
-  --whale-depth:0;
-  --whale-scale-x:1;
-  --whale-scale-y:1;
+  --whale-y:24%;
+  --whale-depth:.65;
   --pattern-size:100% 100%;
-  --shadow-w:760px;
-  --shadow-h:560px;
+  --shadow-w:min(54vw,820px);
+  --shadow-h:min(22vw,330px);
   --glow-w:210px;
   --glow-h:165px;
   height:100vh;
@@ -133,16 +130,16 @@ button{font:inherit}
 .hero::before{
   z-index:0;
   background:radial-gradient(
-    ellipse var(--shadow-w) var(--shadow-h) at var(--signal-x) var(--signal-y),
-    rgba(4,16,27,.28) 0,
-    rgba(4,16,27,.25) 14%,
-    rgba(4,16,27,.2) 30%,
-    rgba(4,16,27,.14) 48%,
-    rgba(4,16,27,.085) 64%,
-    rgba(4,16,27,.04) 80%,
-    rgba(4,16,27,0) 100%
+    ellipse var(--shadow-w) var(--shadow-h) at var(--whale-x) var(--whale-y),
+    rgba(3,14,24,.19) 0,
+    rgba(3,14,24,.17) 18%,
+    rgba(3,14,24,.13) 36%,
+    rgba(3,14,24,.085) 54%,
+    rgba(3,14,24,.045) 70%,
+    rgba(3,14,24,.018) 84%,
+    rgba(3,14,24,0) 100%
   );
-  opacity:var(--signal-opacity);
+  opacity:calc(.58 + var(--whale-depth) * .28);
 }
 
 .hero::after{
@@ -158,51 +155,6 @@ button{font:inherit}
   mask-repeat:no-repeat;
   mix-blend-mode:screen;
   opacity:var(--signal-opacity);
-}
-
-.whale-relief{
-  position:absolute;
-  left:var(--whale-x);
-  top:var(--whale-y);
-  z-index:1;
-  width:min(34vw,520px);
-  height:min(18vw,270px);
-  pointer-events:none;
-  opacity:calc(var(--whale-depth) * .94);
-  transform:translate(-50%,-50%) rotate(var(--whale-angle)) scale(calc(.72 + var(--whale-depth) * .34),calc(.62 + var(--whale-depth) * .42));
-  border-radius:50%;
-  background:
-    radial-gradient(ellipse at 42% 30%,rgba(193,225,244,.22) 0,rgba(150,199,228,.15) 18%,rgba(84,143,180,.07) 38%,transparent 60%),
-    radial-gradient(ellipse at 58% 70%,rgba(2,12,22,.48) 0,rgba(3,17,29,.38) 28%,rgba(4,20,34,.18) 54%,transparent 78%);
-  box-shadow:0 30px 65px rgba(2,13,22,calc(var(--whale-depth) * .34));
-  will-change:transform,opacity;
-}
-
-.whale-relief::after{
-  content:"";
-  position:absolute;
-  left:8%;
-  right:8%;
-  top:8%;
-  height:42%;
-  border-radius:50%;
-  background:radial-gradient(ellipse at center,rgba(190,222,241,.18) 0,rgba(146,192,220,.09) 45%,transparent 78%);
-  opacity:var(--whale-depth);
-}
-
-.whale-pattern{
-  position:absolute;
-  inset:0;
-  z-index:2;
-  pointer-events:none;
-  background:var(--pattern) center/var(--pattern-size) no-repeat;
-  -webkit-mask-image:radial-gradient(ellipse min(18vw,280px) min(9vw,145px) at var(--whale-x) var(--whale-y),#000 0 34%,rgba(0,0,0,.92) 48%,rgba(0,0,0,.45) 68%,transparent 88%);
-  mask-image:radial-gradient(ellipse min(18vw,280px) min(9vw,145px) at var(--whale-x) var(--whale-y),#000 0 34%,rgba(0,0,0,.92) 48%,rgba(0,0,0,.45) 68%,transparent 88%);
-  opacity:calc(var(--whale-depth) * .86);
-  transform-origin:var(--whale-x) var(--whale-y);
-  transform:scale(var(--whale-scale-x),var(--whale-scale-y));
-  mix-blend-mode:screen;
-  will-change:transform,opacity;
 }
 
 .hero-grid{
@@ -313,8 +265,8 @@ body.cursor-glow-enabled .cursor-orb.is-visible{opacity:1}
   .brand-header .menu-button[aria-expanded="true"] span:nth-child(2){opacity:0}
   .brand-header .menu-button[aria-expanded="true"] span:last-child{transform:translateY(-7px) rotate(-45deg)}
   .hero{
-    --shadow-w:118vw;
-    --shadow-h:92vw;
+    --shadow-w:88vw;
+    --shadow-h:38vw;
     --glow-w:38vw;
     --glow-h:30vw;
     --pattern-size:100% 100%;
@@ -323,11 +275,6 @@ body.cursor-glow-enabled .cursor-orb.is-visible{opacity:1}
     padding:40px 0;
     background-position:center
   }
-  .whale-relief{width:72vw;height:34vw}
-  .whale-pattern{
-    -webkit-mask-image:radial-gradient(ellipse 34vw 18vw at var(--whale-x) var(--whale-y),#000 0 34%,rgba(0,0,0,.9) 48%,rgba(0,0,0,.4) 68%,transparent 88%);
-    mask-image:radial-gradient(ellipse 34vw 18vw at var(--whale-x) var(--whale-y),#000 0 34%,rgba(0,0,0,.9) 48%,rgba(0,0,0,.4) 68%,transparent 88%);
-  }
   .hero-grid{padding-block:40px}
   .cursor-toggle{display:none}
   .cursor-orb{display:none}
@@ -335,8 +282,8 @@ body.cursor-glow-enabled .cursor-orb.is-visible{opacity:1}
 
 @media(max-width:480px){
   .hero{
-    --shadow-w:128vw;
-    --shadow-h:104vw;
+    --shadow-w:96vw;
+    --shadow-h:46vw;
     --glow-w:44vw;
     --glow-h:36vw;
   }
@@ -348,7 +295,7 @@ body.cursor-glow-enabled .cursor-orb.is-visible{opacity:1}
 }
 
 @media(prefers-reduced-motion:reduce){
-  .hero::before,.hero::after,.whale-relief,.whale-pattern,.cursor-toggle,.cursor-orb{display:none}
+  .hero::before,.hero::after,.cursor-toggle,.cursor-orb{display:none}
 }
 </style>
 </head>
@@ -387,8 +334,6 @@ body.cursor-glow-enabled .cursor-orb.is-visible{opacity:1}
 <div class="cursor-orb" aria-hidden="true"><span class="cursor-orb-shape"></span></div>
 <main id="content">
   <section class="hero" id="top">
-    <div class="whale-relief" aria-hidden="true"></div>
-    <div class="whale-pattern" aria-hidden="true"></div>
     <div class="container hero-grid">
       <div class="hero-copy">
         <p class="kicker">PLATFORM FOR LEARNING AND CAREER GROWTH</p>
@@ -459,6 +404,7 @@ let signalY=0;
 let lastPaint=0;
 let lastFrame=0;
 let pathDistance=0;
+let whalePhase=0;
 let trajectoryCache=null;
 
 const trajectoryPoints=[
@@ -602,26 +548,23 @@ function updateSignal(time){
     targetY=Math.max(0,Math.min(heroRect.height,targetPointerY-heroRect.top));
   }else{
     const trajectory=getTrajectoryPoint(pathDistance,heroRect.width,heroRect.height);
-    const nextTrajectory=getTrajectoryPoint(pathDistance+8,heroRect.width,heroRect.height);
     const speed=200;
     pathDistance+=speed*deltaSec;
     targetX=trajectory.x;
     targetY=trajectory.y;
 
-    const total=trajectoryCache.total;
-    const progress=((pathDistance%total)+total)%total/total;
-    const depthWave=Math.max(0,Math.sin(progress*Math.PI*2));
-    const depth=Math.pow(depthWave,1.15);
-    const angle=Math.atan2(nextTrajectory.y-trajectory.y,nextTrajectory.x-trajectory.x)*180/Math.PI;
-    const whaleX=trajectory.x-28;
-    const whaleY=trajectory.y+16;
+    whalePhase=(whalePhase+deltaSec*.34)%(Math.PI*2);
+    const whaleCenterX=heroRect.width*.5;
+    const whaleCenterY=heroRect.height*.23;
+    const whaleRadiusX=heroRect.width*.38;
+    const whaleRadiusY=heroRect.height*.055;
+    const whaleX=whaleCenterX+Math.cos(whalePhase)*whaleRadiusX;
+    const whaleY=whaleCenterY+Math.sin(whalePhase)*whaleRadiusY;
+    const whaleDepth=.58+.12*(.5+.5*Math.sin(whalePhase-Math.PI*.18));
 
     hero.style.setProperty('--whale-x',whaleX+'px');
     hero.style.setProperty('--whale-y',whaleY+'px');
-    hero.style.setProperty('--whale-angle',angle+'deg');
-    hero.style.setProperty('--whale-depth',depth.toFixed(4));
-    hero.style.setProperty('--whale-scale-x',(1+depth*.065).toFixed(4));
-    hero.style.setProperty('--whale-scale-y',(1+depth*.11).toFixed(4));
+    hero.style.setProperty('--whale-depth',whaleDepth.toFixed(4));
   }
 
   if(!signalX&&!signalY){
@@ -632,7 +575,6 @@ function updateSignal(time){
   }
 
   if(cursorMode){
-    hero.style.setProperty('--whale-depth','0');
     signalX+=(targetX-signalX)*.095;
     signalY+=(targetY-signalY)*.095;
   }else{
