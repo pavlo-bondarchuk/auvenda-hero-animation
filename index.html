@@ -379,7 +379,7 @@ let jellyX=targetPointerX;
 let jellyY=targetPointerY;
 let signalX=0;
 let signalY=0;
-let lastTime=performance.now();
+let lastPaint=0;
 
 function setCursorMode(enabled){
   cursorMode=enabled&&finePointer.matches&&!reducedMotion.matches;
@@ -387,10 +387,8 @@ function setCursorMode(enabled){
   cursorToggle.setAttribute('aria-pressed',String(cursorMode));
   cursorToggle.setAttribute('aria-label',cursorMode?'Disable cursor glow':'Enable cursor glow');
   cursorToggle.textContent=cursorMode?'Auto glow':'Cursor glow';
-  if(!cursorMode){
-    pointerInside=false;
-    cursorJelly.classList.remove('is-visible');
-  }
+  if(!cursorMode) cursorJelly.classList.remove('is-visible');
+  if(cursorMode&&pointerInside) cursorJelly.classList.add('is-visible');
 }
 
 cursorToggle.addEventListener('click',()=>setCursorMode(!cursorMode));
@@ -403,8 +401,10 @@ hero.addEventListener('pointerenter',event=>{
 });
 
 hero.addEventListener('pointermove',event=>{
+  pointerInside=true;
   targetPointerX=event.clientX;
   targetPointerY=event.clientY;
+  if(cursorMode) cursorJelly.classList.add('is-visible');
 });
 
 hero.addEventListener('pointerleave',()=>{
@@ -416,6 +416,15 @@ function updateSignal(time){
   if(reducedMotion.matches) return requestAnimationFrame(updateSignal);
 
   const heroRect=hero.getBoundingClientRect();
+  const frameInterval=cursorMode?16:32;
+  const heroVisible=heroRect.bottom>0&&heroRect.top<window.innerHeight;
+
+  if(!heroVisible||time-lastPaint<frameInterval){
+    requestAnimationFrame(updateSignal);
+    return;
+  }
+
+  lastPaint=time;
   const copyRect=heroCopy.getBoundingClientRect();
   let targetX;
   let targetY;
@@ -424,7 +433,7 @@ function updateSignal(time){
     targetX=Math.max(0,Math.min(heroRect.width,targetPointerX-heroRect.left));
     targetY=Math.max(0,Math.min(heroRect.height,targetPointerY-heroRect.top));
   }else{
-    const elapsed=time*.00016;
+    const elapsed=time*.00011;
     const centerX=Math.min(heroRect.width*.44,copyRect.left-heroRect.left+Math.min(copyRect.width*.46,520));
     const centerY=copyRect.top-heroRect.top+copyRect.height*.5;
     const radiusX=Math.min(heroRect.width*.34,520);
@@ -438,7 +447,7 @@ function updateSignal(time){
     signalY=targetY;
   }
 
-  const follow=cursorMode?.115:.065;
+  const follow=cursorMode ? .115 : .065;
   signalX+=(targetX-signalX)*follow;
   signalY+=(targetY-signalY)*follow;
   hero.style.setProperty('--signal-x',signalX+'px');
@@ -454,7 +463,6 @@ function updateSignal(time){
     cursorJelly.style.transform='translate3d('+(jellyX-23)+'px,'+(jellyY-20)+'px,0) rotate('+angle+'deg) scale('+stretch+',1)';
   }
 
-  lastTime=time;
   requestAnimationFrame(updateSignal);
 }
 
