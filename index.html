@@ -14,7 +14,7 @@
   --ink:#09141c;
   --white:#fff;
   --container-max:1240px;
-  --pattern:url("https://raw.githubusercontent.com/tcsavant/maritime-training-platform-landing/main/assets/auvenida/pattern.svg");
+  --pattern:url("./pattern.svg");
 }
 
 @font-face{
@@ -425,7 +425,21 @@ function updateSignal(time){
   }
 
   lastPaint=time;
-  const copyRect=heroCopy.getBoundingClientRect();
+  const h1=heroCopy.querySelector('h1');
+  const kicker=heroCopy.querySelector('.kicker');
+  const lead=heroCopy.querySelector('.hero-lead');
+  const actions=heroCopy.querySelector('.actions');
+  const range=document.createRange();
+  range.selectNodeContents(h1);
+  const h1Rect=range.getBoundingClientRect();
+  range.detach();
+  const kickerRect=kicker.getBoundingClientRect();
+  const leadRect=lead.getBoundingClientRect();
+  const actionsRect=actions.getBoundingClientRect();
+  const contentLeft=Math.min(h1Rect.left,kickerRect.left,leadRect.left,actionsRect.left);
+  const contentRight=Math.max(h1Rect.right,kickerRect.right,leadRect.right,actionsRect.right);
+  const contentTop=Math.min(h1Rect.top,kickerRect.top,leadRect.top,actionsRect.top);
+  const contentBottom=Math.max(h1Rect.bottom,kickerRect.bottom,leadRect.bottom,actionsRect.bottom);
   let targetX;
   let targetY;
 
@@ -434,12 +448,12 @@ function updateSignal(time){
     targetY=Math.max(0,Math.min(heroRect.height,targetPointerY-heroRect.top));
   }else{
     const elapsed=time*.00011;
-    const centerX=Math.min(heroRect.width*.44,copyRect.left-heroRect.left+Math.min(copyRect.width*.46,520));
-    const centerY=copyRect.top-heroRect.top+copyRect.height*.5;
-    const radiusX=Math.min(heroRect.width*.34,520);
-    const radiusY=Math.min(heroRect.height*.34,285);
-    targetX=centerX+Math.cos(elapsed*Math.PI*2)*radiusX;
-    targetY=centerY+Math.sin(elapsed*Math.PI*2)*radiusY;
+    const centerX=(contentLeft+contentRight)*.5-heroRect.left;
+    const centerY=(contentTop+contentBottom)*.5-heroRect.top;
+    const radiusX=Math.min(heroRect.width*.37,(contentRight-contentLeft)*.5+110);
+    const radiusY=Math.min(heroRect.height*.36,(contentBottom-contentTop)*.5+72);
+    targetX=Math.max(88,Math.min(heroRect.width-88,centerX+Math.cos(elapsed*Math.PI*2)*radiusX));
+    targetY=Math.max(88,Math.min(heroRect.height-88,centerY+Math.sin(elapsed*Math.PI*2)*radiusY));
   }
 
   if(!signalX&&!signalY){
