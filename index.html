@@ -100,8 +100,10 @@ button{font:inherit}
   --signal-x:50%;
   --signal-y:50%;
   --signal-opacity:1;
-  --wave-x:92.5%;
-  --wave-tail-x:76%;
+  --wave-x:50%;
+  --wave-y:50%;
+  --wave-tail-x:42%;
+  --wave-tail-y:50%;
   --wave-depth:.76;
   --wave-shift-x:0px;
   --wave-skew:0deg;
@@ -132,7 +134,7 @@ button{font:inherit}
   z-index:0;
   background:
     radial-gradient(
-      ellipse 34vw 94% at var(--wave-tail-x) 50%,
+      ellipse 34vw 94% at var(--wave-tail-x) var(--wave-tail-y),
       rgba(17,41,62,.34) 0,
       rgba(17,41,62,.27) 24%,
       rgba(17,41,62,.18) 46%,
@@ -141,7 +143,7 @@ button{font:inherit}
       transparent 100%
     ),
     radial-gradient(
-      ellipse 11vw 100% at var(--wave-x) 50%,
+      ellipse 11vw 100% at var(--wave-x) var(--wave-y),
       rgba(17,41,62,.48) 0,
       rgba(17,41,62,.34) 30%,
       rgba(17,41,62,.18) 56%,
@@ -175,7 +177,7 @@ button{font:inherit}
   pointer-events:none;
   background:var(--pattern) center/100% 100% no-repeat;
   -webkit-mask-image:radial-gradient(
-    ellipse 30vw 88% at var(--wave-tail-x) 50%,
+    ellipse 30vw 88% at var(--wave-tail-x) var(--wave-tail-y),
     #000 0 12%,
     rgba(0,0,0,.94) 28%,
     rgba(0,0,0,.68) 48%,
@@ -184,7 +186,7 @@ button{font:inherit}
     transparent 100%
   );
   mask-image:radial-gradient(
-    ellipse 30vw 88% at var(--wave-tail-x) 50%,
+    ellipse 30vw 88% at var(--wave-tail-x) var(--wave-tail-y),
     #000 0 12%,
     rgba(0,0,0,.94) 28%,
     rgba(0,0,0,.68) 48%,
@@ -192,7 +194,7 @@ button{font:inherit}
     rgba(0,0,0,.10) 84%,
     transparent 100%
   );
-  transform-origin:var(--wave-x) 50%;
+  transform-origin:var(--wave-x) var(--wave-y);
   transform:
     translateX(var(--wave-shift-x))
     skewX(var(--wave-skew))
@@ -447,7 +449,10 @@ let lastPaint=0;
 let lastFrame=0;
 let pathDistance=0;
 let pathDirection=1;
-let wavePhase=0;
+let waveDirX=1;
+let waveDirY=0;
+let previousSignalX=0;
+let previousSignalY=0;
 let trajectoryCache=null;
 
 const trajectoryPoints=[
@@ -599,23 +604,6 @@ function updateSignal(time){
   let targetX;
   let targetY;
 
-  wavePhase=(wavePhase+deltaSec*.42)%(Math.PI*2);
-  const waveTravel=.5+.5*Math.cos(wavePhase);
-  const waveX=heroRect.width*(.075+.85*waveTravel);
-  const waveDirection=-Math.sin(wavePhase);
-  const waveDepth=.72+.08*(.5+.5*Math.cos(wavePhase));
-  const waveTailX=waveX-waveDirection*heroRect.width*.17;
-  const waveShiftX=waveDirection*10;
-  const waveSkew=waveDirection*.9;
-  const waveScaleX=1.004+Math.abs(waveDirection)*.014;
-
-  hero.style.setProperty('--wave-x',waveX+'px');
-  hero.style.setProperty('--wave-tail-x',waveTailX+'px');
-  hero.style.setProperty('--wave-depth',waveDepth.toFixed(4));
-  hero.style.setProperty('--wave-shift-x',waveShiftX.toFixed(2)+'px');
-  hero.style.setProperty('--wave-skew',waveSkew.toFixed(2)+'deg');
-  hero.style.setProperty('--wave-scale-x',waveScaleX.toFixed(4));
-
   if(cursorMode&&pointerInside){
     targetX=Math.max(0,Math.min(heroRect.width,targetPointerX-heroRect.left));
     targetY=Math.max(0,Math.min(heroRect.height,targetPointerY-heroRect.top));
@@ -653,6 +641,39 @@ function updateSignal(time){
   hero.style.setProperty('--signal-x',signalX+'px');
   hero.style.setProperty('--signal-y',signalY+'px');
 
+  if(previousSignalX||previousSignalY){
+    const moveX=signalX-previousSignalX;
+    const moveY=signalY-previousSignalY;
+    const moveLength=Math.hypot(moveX,moveY);
+
+    if(moveLength>.35){
+      waveDirX=moveX/moveLength;
+      waveDirY=moveY/moveLength;
+    }
+  }
+
+  previousSignalX=signalX;
+  previousSignalY=signalY;
+
+  const waveTailLength=Math.min(heroRect.width*.22,340);
+  const waveX=signalX;
+  const waveY=signalY;
+  const waveTailX=waveX-waveDirX*waveTailLength;
+  const waveTailY=waveY-waveDirY*waveTailLength*.62;
+  const waveDepth=.78;
+  const waveShiftX=-waveDirX*8;
+  const waveSkew=waveDirX*.75;
+  const waveScaleX=1.006+Math.abs(waveDirX)*.012;
+
+  hero.style.setProperty('--wave-x',waveX+'px');
+  hero.style.setProperty('--wave-y',waveY+'px');
+  hero.style.setProperty('--wave-tail-x',waveTailX+'px');
+  hero.style.setProperty('--wave-tail-y',waveTailY+'px');
+  hero.style.setProperty('--wave-depth',waveDepth.toFixed(4));
+  hero.style.setProperty('--wave-shift-x',waveShiftX.toFixed(2)+'px');
+  hero.style.setProperty('--wave-skew',waveSkew.toFixed(2)+'deg');
+  hero.style.setProperty('--wave-scale-x',waveScaleX.toFixed(4));
+
   if(cursorMode&&pointerInside){
     jellyX+=(targetPointerX-jellyX)*.11;
     jellyY+=(targetPointerY-jellyY)*.11;
@@ -688,6 +709,12 @@ signalX=initialPoint.x;
 signalY=initialPoint.y;
 hero.style.setProperty('--signal-x',signalX+'px');
 hero.style.setProperty('--signal-y',signalY+'px');
+hero.style.setProperty('--wave-x',signalX+'px');
+hero.style.setProperty('--wave-y',signalY+'px');
+hero.style.setProperty('--wave-tail-x',(signalX-120)+'px');
+hero.style.setProperty('--wave-tail-y',signalY+'px');
+previousSignalX=signalX;
+previousSignalY=signalY;
 requestAnimationFrame(updateSignal);
 </script>
 </body>
