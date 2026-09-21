@@ -101,8 +101,8 @@ button{font:inherit}
   --signal-y:50%;
   --signal-opacity:1;
   --wave-x:92.5%;
+  --wave-tail-x:76%;
   --wave-depth:.76;
-  --wave-w:15vw;
   --wave-shift-x:0px;
   --wave-skew:0deg;
   --wave-scale-x:1;
@@ -129,18 +129,28 @@ button{font:inherit}
 }
 
 .hero::before{
-  inset:auto;
-  top:0;
-  bottom:0;
-  left:var(--wave-x);
   z-index:0;
-  width:var(--wave-w);
-  height:100%;
-  background:var(--navy);
-  opacity:calc(.26 + var(--wave-depth) * .18);
-  transform:translateX(-50%);
-  filter:blur(30px);
-  will-change:left,opacity;
+  background:
+    radial-gradient(
+      ellipse 34vw 94% at var(--wave-tail-x) 50%,
+      rgba(17,41,62,.34) 0,
+      rgba(17,41,62,.27) 24%,
+      rgba(17,41,62,.18) 46%,
+      rgba(17,41,62,.09) 68%,
+      rgba(17,41,62,.03) 84%,
+      transparent 100%
+    ),
+    radial-gradient(
+      ellipse 11vw 100% at var(--wave-x) 50%,
+      rgba(17,41,62,.48) 0,
+      rgba(17,41,62,.34) 30%,
+      rgba(17,41,62,.18) 56%,
+      rgba(17,41,62,.06) 76%,
+      transparent 100%
+    );
+  opacity:calc(.66 + var(--wave-depth) * .18);
+  filter:blur(18px);
+  will-change:background,opacity;
 }
 
 .hero::after{
@@ -164,34 +174,30 @@ button{font:inherit}
   z-index:1;
   pointer-events:none;
   background:var(--pattern) center/100% 100% no-repeat;
-  -webkit-mask-image:linear-gradient(
-    to right,
-    transparent calc(var(--wave-x) - 10.5vw),
-    rgba(0,0,0,.18) calc(var(--wave-x) - 9vw),
-    rgba(0,0,0,.82) calc(var(--wave-x) - 7.5vw),
-    #000 calc(var(--wave-x) - 5.5vw),
-    #000 calc(var(--wave-x) + 5.5vw),
-    rgba(0,0,0,.82) calc(var(--wave-x) + 7.5vw),
-    rgba(0,0,0,.18) calc(var(--wave-x) + 9vw),
-    transparent calc(var(--wave-x) + 10.5vw)
+  -webkit-mask-image:radial-gradient(
+    ellipse 30vw 88% at var(--wave-tail-x) 50%,
+    #000 0 12%,
+    rgba(0,0,0,.94) 28%,
+    rgba(0,0,0,.68) 48%,
+    rgba(0,0,0,.34) 68%,
+    rgba(0,0,0,.10) 84%,
+    transparent 100%
   );
-  mask-image:linear-gradient(
-    to right,
-    transparent calc(var(--wave-x) - 10.5vw),
-    rgba(0,0,0,.18) calc(var(--wave-x) - 9vw),
-    rgba(0,0,0,.82) calc(var(--wave-x) - 7.5vw),
-    #000 calc(var(--wave-x) - 5.5vw),
-    #000 calc(var(--wave-x) + 5.5vw),
-    rgba(0,0,0,.82) calc(var(--wave-x) + 7.5vw),
-    rgba(0,0,0,.18) calc(var(--wave-x) + 9vw),
-    transparent calc(var(--wave-x) + 10.5vw)
+  mask-image:radial-gradient(
+    ellipse 30vw 88% at var(--wave-tail-x) 50%,
+    #000 0 12%,
+    rgba(0,0,0,.94) 28%,
+    rgba(0,0,0,.68) 48%,
+    rgba(0,0,0,.34) 68%,
+    rgba(0,0,0,.10) 84%,
+    transparent 100%
   );
   transform-origin:var(--wave-x) 50%;
   transform:
     translateX(var(--wave-shift-x))
     skewX(var(--wave-skew))
     scaleX(var(--wave-scale-x));
-  opacity:calc(.10 + var(--wave-depth) * .14);
+  opacity:calc(.08 + var(--wave-depth) * .12);
   mix-blend-mode:screen;
   will-change:transform,opacity;
 }
@@ -304,7 +310,6 @@ body.cursor-glow-enabled .cursor-orb.is-visible{opacity:1}
   .brand-header .menu-button[aria-expanded="true"] span:nth-child(2){opacity:0}
   .brand-header .menu-button[aria-expanded="true"] span:last-child{transform:translateY(-7px) rotate(-45deg)}
   .hero{
-    --wave-w:18vw;
     --glow-w:38vw;
     --glow-h:30vw;
     --pattern-size:100% 100%;
@@ -320,7 +325,6 @@ body.cursor-glow-enabled .cursor-orb.is-visible{opacity:1}
 
 @media(max-width:480px){
   .hero{
-    --wave-w:22vw;
     --glow-w:44vw;
     --glow-h:36vw;
   }
@@ -600,11 +604,13 @@ function updateSignal(time){
   const waveX=heroRect.width*(.075+.85*waveTravel);
   const waveDirection=-Math.sin(wavePhase);
   const waveDepth=.72+.08*(.5+.5*Math.cos(wavePhase));
-  const waveShiftX=waveDirection*12;
-  const waveSkew=waveDirection*1.35;
-  const waveScaleX=1.006+Math.abs(waveDirection)*.018;
+  const waveTailX=waveX-waveDirection*heroRect.width*.17;
+  const waveShiftX=waveDirection*10;
+  const waveSkew=waveDirection*.9;
+  const waveScaleX=1.004+Math.abs(waveDirection)*.014;
 
   hero.style.setProperty('--wave-x',waveX+'px');
+  hero.style.setProperty('--wave-tail-x',waveTailX+'px');
   hero.style.setProperty('--wave-depth',waveDepth.toFixed(4));
   hero.style.setProperty('--wave-shift-x',waveShiftX.toFixed(2)+'px');
   hero.style.setProperty('--wave-skew',waveSkew.toFixed(2)+'deg');
