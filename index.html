@@ -100,12 +100,17 @@ button{font:inherit}
   --signal-x:50%;
   --signal-y:50%;
   --signal-opacity:1;
-  --whale-x:50%;
-  --whale-y:24%;
-  --whale-depth:.65;
+  --wave-x:110%;
+  --wave-y:30%;
+  --wave-depth:.72;
+  --wave-shift-x:0px;
+  --wave-shift-y:0px;
+  --wave-skew:0deg;
+  --wave-scale-x:1;
+  --wave-scale-y:1;
   --pattern-size:100% 100%;
-  --shadow-w:min(54vw,820px);
-  --shadow-h:min(22vw,330px);
+  --wave-shadow-w:min(88vw,1380px);
+  --wave-shadow-h:min(28vw,430px);
   --glow-w:210px;
   --glow-h:165px;
   height:100vh;
@@ -130,16 +135,16 @@ button{font:inherit}
 .hero::before{
   z-index:0;
   background:radial-gradient(
-    ellipse var(--shadow-w) var(--shadow-h) at var(--whale-x) var(--whale-y),
-    rgba(3,14,24,.19) 0,
-    rgba(3,14,24,.17) 18%,
-    rgba(3,14,24,.13) 36%,
-    rgba(3,14,24,.085) 54%,
-    rgba(3,14,24,.045) 70%,
-    rgba(3,14,24,.018) 84%,
+    ellipse var(--wave-shadow-w) var(--wave-shadow-h) at var(--wave-x) var(--wave-y),
+    rgba(3,14,24,.20) 0,
+    rgba(3,14,24,.18) 18%,
+    rgba(3,14,24,.14) 38%,
+    rgba(3,14,24,.09) 56%,
+    rgba(3,14,24,.045) 72%,
+    rgba(3,14,24,.018) 86%,
     rgba(3,14,24,0) 100%
   );
-  opacity:calc(.58 + var(--whale-depth) * .28);
+  opacity:calc(.58 + var(--wave-depth) * .24);
 }
 
 .hero::after{
@@ -155,6 +160,40 @@ button{font:inherit}
   mask-repeat:no-repeat;
   mix-blend-mode:screen;
   opacity:var(--signal-opacity);
+}
+
+.wave-distortion{
+  position:absolute;
+  inset:-3%;
+  z-index:1;
+  pointer-events:none;
+  background:var(--pattern) center/100% 100% no-repeat;
+  -webkit-mask-image:radial-gradient(
+    ellipse min(72vw,1120px) min(19vw,290px) at var(--wave-x) var(--wave-y),
+    #000 0 18%,
+    rgba(0,0,0,.95) 36%,
+    rgba(0,0,0,.72) 56%,
+    rgba(0,0,0,.34) 74%,
+    transparent 100%
+  );
+  mask-image:radial-gradient(
+    ellipse min(72vw,1120px) min(19vw,290px) at var(--wave-x) var(--wave-y),
+    #000 0 18%,
+    rgba(0,0,0,.95) 36%,
+    rgba(0,0,0,.72) 56%,
+    rgba(0,0,0,.34) 74%,
+    transparent 100%
+  );
+  -webkit-mask-repeat:no-repeat;
+  mask-repeat:no-repeat;
+  transform-origin:var(--wave-x) var(--wave-y);
+  transform:
+    translate(var(--wave-shift-x),var(--wave-shift-y))
+    skewX(var(--wave-skew))
+    scale(var(--wave-scale-x),var(--wave-scale-y));
+  opacity:calc(.12 + var(--wave-depth) * .16);
+  mix-blend-mode:screen;
+  will-change:transform,opacity;
 }
 
 .hero-grid{
@@ -265,8 +304,8 @@ body.cursor-glow-enabled .cursor-orb.is-visible{opacity:1}
   .brand-header .menu-button[aria-expanded="true"] span:nth-child(2){opacity:0}
   .brand-header .menu-button[aria-expanded="true"] span:last-child{transform:translateY(-7px) rotate(-45deg)}
   .hero{
-    --shadow-w:88vw;
-    --shadow-h:38vw;
+    --wave-shadow-w:118vw;
+    --wave-shadow-h:44vw;
     --glow-w:38vw;
     --glow-h:30vw;
     --pattern-size:100% 100%;
@@ -275,6 +314,24 @@ body.cursor-glow-enabled .cursor-orb.is-visible{opacity:1}
     padding:40px 0;
     background-position:center
   }
+  .wave-distortion{
+    -webkit-mask-image:radial-gradient(
+      ellipse 118vw 28vw at var(--wave-x) var(--wave-y),
+      #000 0 18%,
+      rgba(0,0,0,.94) 38%,
+      rgba(0,0,0,.68) 58%,
+      rgba(0,0,0,.30) 76%,
+      transparent 100%
+    );
+    mask-image:radial-gradient(
+      ellipse 118vw 28vw at var(--wave-x) var(--wave-y),
+      #000 0 18%,
+      rgba(0,0,0,.94) 38%,
+      rgba(0,0,0,.68) 58%,
+      rgba(0,0,0,.30) 76%,
+      transparent 100%
+    );
+  }
   .hero-grid{padding-block:40px}
   .cursor-toggle{display:none}
   .cursor-orb{display:none}
@@ -282,8 +339,8 @@ body.cursor-glow-enabled .cursor-orb.is-visible{opacity:1}
 
 @media(max-width:480px){
   .hero{
-    --shadow-w:96vw;
-    --shadow-h:46vw;
+    --wave-shadow-w:128vw;
+    --wave-shadow-h:54vw;
     --glow-w:44vw;
     --glow-h:36vw;
   }
@@ -295,7 +352,7 @@ body.cursor-glow-enabled .cursor-orb.is-visible{opacity:1}
 }
 
 @media(prefers-reduced-motion:reduce){
-  .hero::before,.hero::after,.cursor-toggle,.cursor-orb{display:none}
+  .hero::before,.hero::after,.wave-distortion,.cursor-toggle,.cursor-orb{display:none}
 }
 </style>
 </head>
@@ -334,6 +391,7 @@ body.cursor-glow-enabled .cursor-orb.is-visible{opacity:1}
 <div class="cursor-orb" aria-hidden="true"><span class="cursor-orb-shape"></span></div>
 <main id="content">
   <section class="hero" id="top">
+    <div class="wave-distortion" aria-hidden="true"></div>
     <div class="container hero-grid">
       <div class="hero-copy">
         <p class="kicker">PLATFORM FOR LEARNING AND CAREER GROWTH</p>
@@ -404,7 +462,7 @@ let signalY=0;
 let lastPaint=0;
 let lastFrame=0;
 let pathDistance=0;
-let whalePhase=0;
+let wavePhase=0;
 let trajectoryCache=null;
 
 const trajectoryPoints=[
@@ -543,6 +601,30 @@ function updateSignal(time){
   let targetX;
   let targetY;
 
+  wavePhase=(wavePhase+deltaSec*.46)%(Math.PI*2);
+  const waveCenterX=heroRect.width*.5;
+  const waveCenterY=heroRect.height*.31;
+  const waveRadiusX=heroRect.width*.62;
+  const waveRadiusY=heroRect.height*.045;
+  const waveX=waveCenterX+Math.cos(wavePhase)*waveRadiusX;
+  const waveY=waveCenterY+Math.sin(wavePhase)*waveRadiusY;
+  const waveDirection=-Math.sin(wavePhase);
+  const waveDepth=.68+.10*(.5+.5*Math.cos(wavePhase));
+  const waveShiftX=waveDirection*18;
+  const waveShiftY=Math.sin(wavePhase*2)*5;
+  const waveSkew=waveDirection*2.2;
+  const waveScaleX=1.008+Math.abs(waveDirection)*.020;
+  const waveScaleY=1.014+Math.abs(waveDirection)*.030;
+
+  hero.style.setProperty('--wave-x',waveX+'px');
+  hero.style.setProperty('--wave-y',waveY+'px');
+  hero.style.setProperty('--wave-depth',waveDepth.toFixed(4));
+  hero.style.setProperty('--wave-shift-x',waveShiftX.toFixed(2)+'px');
+  hero.style.setProperty('--wave-shift-y',waveShiftY.toFixed(2)+'px');
+  hero.style.setProperty('--wave-skew',waveSkew.toFixed(2)+'deg');
+  hero.style.setProperty('--wave-scale-x',waveScaleX.toFixed(4));
+  hero.style.setProperty('--wave-scale-y',waveScaleY.toFixed(4));
+
   if(cursorMode&&pointerInside){
     targetX=Math.max(0,Math.min(heroRect.width,targetPointerX-heroRect.left));
     targetY=Math.max(0,Math.min(heroRect.height,targetPointerY-heroRect.top));
@@ -552,19 +634,6 @@ function updateSignal(time){
     pathDistance+=speed*deltaSec;
     targetX=trajectory.x;
     targetY=trajectory.y;
-
-    whalePhase=(whalePhase+deltaSec*.34)%(Math.PI*2);
-    const whaleCenterX=heroRect.width*.5;
-    const whaleCenterY=heroRect.height*.23;
-    const whaleRadiusX=heroRect.width*.38;
-    const whaleRadiusY=heroRect.height*.055;
-    const whaleX=whaleCenterX+Math.cos(whalePhase)*whaleRadiusX;
-    const whaleY=whaleCenterY+Math.sin(whalePhase)*whaleRadiusY;
-    const whaleDepth=.58+.12*(.5+.5*Math.sin(whalePhase-Math.PI*.18));
-
-    hero.style.setProperty('--whale-x',whaleX+'px');
-    hero.style.setProperty('--whale-y',whaleY+'px');
-    hero.style.setProperty('--whale-depth',whaleDepth.toFixed(4));
   }
 
   if(!signalX&&!signalY){
