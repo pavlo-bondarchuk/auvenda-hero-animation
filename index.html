@@ -530,21 +530,6 @@ function updateSignal(time){
   }
 
   lastPaint=time;
-  const h1=heroCopy.querySelector('h1');
-  const kicker=heroCopy.querySelector('.kicker');
-  const lead=heroCopy.querySelector('.hero-lead');
-  const actions=heroCopy.querySelector('.actions');
-  const range=document.createRange();
-  range.selectNodeContents(h1);
-  const h1Rect=range.getBoundingClientRect();
-  range.detach();
-  const kickerRect=kicker.getBoundingClientRect();
-  const leadRect=lead.getBoundingClientRect();
-  const actionsRect=actions.getBoundingClientRect();
-  const contentLeft=Math.min(h1Rect.left,kickerRect.left,leadRect.left,actionsRect.left);
-  const contentRight=Math.max(h1Rect.right,kickerRect.right,leadRect.right,actionsRect.right);
-  const contentTop=Math.min(h1Rect.top,kickerRect.top,leadRect.top,actionsRect.top);
-  const contentBottom=Math.max(h1Rect.bottom,kickerRect.bottom,leadRect.bottom,actionsRect.bottom);
   let targetX;
   let targetY;
 
