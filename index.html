@@ -122,40 +122,47 @@ button{font:inherit}
   mask-size:cover;
   -webkit-mask-repeat:no-repeat;
   mask-repeat:no-repeat;
-  background:radial-gradient(circle at 50% 50%,rgba(255,255,255,1) 0 1.4%,rgba(229,195,99,.98) 2.2%,rgba(169,209,255,.88) 4%,rgba(169,209,255,.34) 8%,transparent 15%);
-  filter:drop-shadow(0 0 5px rgba(229,195,99,.8)) drop-shadow(0 0 12px rgba(169,209,255,.7));
+  background-image:radial-gradient(circle,rgba(255,255,255,1) 0 3%,rgba(255,244,207,1) 4%,rgba(229,195,99,1) 8%,rgba(169,209,255,.96) 16%,rgba(169,209,255,.48) 28%,rgba(169,209,255,.16) 40%,transparent 54%);
+  background-size:clamp(280px,34vw,560px) clamp(280px,34vw,560px);
+  background-repeat:no-repeat;
+  mix-blend-mode:screen;
+  filter:drop-shadow(0 0 7px rgba(255,255,255,.9)) drop-shadow(0 0 18px rgba(229,195,99,.78)) drop-shadow(0 0 34px rgba(169,209,255,.68));
+  will-change:background-position,opacity;
   animation:signalA 8s cubic-bezier(.42,0,.58,1) infinite;
 }
 
 .pattern-light.b{
   animation:signalB 10.5s cubic-bezier(.42,0,.58,1) -4.2s infinite;
-  filter:drop-shadow(0 0 4px rgba(255,255,255,.75)) drop-shadow(0 0 11px rgba(169,209,255,.62));
+  filter:drop-shadow(0 0 6px rgba(255,255,255,.72)) drop-shadow(0 0 15px rgba(229,195,99,.58)) drop-shadow(0 0 30px rgba(169,209,255,.56));
 }
 
-.pattern-light.c{animation:signalC 12s cubic-bezier(.42,0,.58,1) -7.5s infinite}
+.pattern-light.c{
+  animation:signalC 12s cubic-bezier(.42,0,.58,1) -7.5s infinite;
+  filter:drop-shadow(0 0 5px rgba(255,255,255,.6)) drop-shadow(0 0 13px rgba(229,195,99,.45)) drop-shadow(0 0 26px rgba(169,209,255,.46));
+}
 
 @keyframes signalA{
-  0%,7%{background-position:-25vw 18vh;opacity:0}
-  12%{opacity:.9}
-  47%{background-position:47vw 43vh;opacity:.9}
-  82%{background-position:115vw 70vh;opacity:.72}
-  90%,100%{background-position:125vw 75vh;opacity:0}
+  0%,7%{background-position:-28% 16%;opacity:0}
+  12%{opacity:1}
+  47%{background-position:48% 44%;opacity:1}
+  82%{background-position:128% 72%;opacity:.86}
+  90%,100%{background-position:138% 78%;opacity:0}
 }
 
 @keyframes signalB{
-  0%,10%{background-position:108vw -8vh;opacity:0}
-  16%{opacity:.72}
-  50%{background-position:65vw 38vh;opacity:.72}
-  82%{background-position:12vw 82vh;opacity:.58}
-  92%,100%{background-position:-18vw 100vh;opacity:0}
+  0%,10%{background-position:130% -18%;opacity:0}
+  16%{opacity:.86}
+  50%{background-position:64% 36%;opacity:.86}
+  82%{background-position:-18% 88%;opacity:.7}
+  92%,100%{background-position:-32% 112%;opacity:0}
 }
 
 @keyframes signalC{
-  0%,12%{background-position:20vw 105vh;opacity:0}
-  18%{opacity:.55}
-  52%{background-position:54vw 55vh;opacity:.55}
-  82%{background-position:86vw 6vh;opacity:.45}
-  92%,100%{background-position:100vw -20vh;opacity:0}
+  0%,12%{background-position:8% 128%;opacity:0}
+  18%{opacity:.64}
+  52%{background-position:54% 52%;opacity:.64}
+  82%{background-position:96% -12%;opacity:.54}
+  92%,100%{background-position:112% -28%;opacity:0}
 }
 
 .hero-grid{
