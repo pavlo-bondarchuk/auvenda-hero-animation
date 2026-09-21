@@ -399,7 +399,7 @@ let jellyY=targetPointerY;
 let signalX=0;
 let signalY=0;
 let lastPaint=0;
-let lastFrame=performance.now();
+let lastFrame=0;
 let pathDistance=0;
 let trajectoryCache=null;
 
@@ -516,10 +516,14 @@ hero.addEventListener('pointerleave',()=>{
 });
 
 function updateSignal(time){
-  if(reducedMotion.matches) return requestAnimationFrame(updateSignal);
-
+  if(!lastFrame) lastFrame=time;
   const deltaSec=Math.min(.05,Math.max(.001,(time-lastFrame)/1000));
   lastFrame=time;
+
+  if(reducedMotion.matches){
+    requestAnimationFrame(updateSignal);
+    return;
+  }
   const heroRect=hero.getBoundingClientRect();
   const frameInterval=cursorMode?16:32;
   const heroVisible=heroRect.bottom>0&&heroRect.top<window.innerHeight;
@@ -547,6 +551,8 @@ function updateSignal(time){
   if(!signalX&&!signalY){
     signalX=targetX;
     signalY=targetY;
+    hero.style.setProperty('--signal-x',signalX+'px');
+    hero.style.setProperty('--signal-y',signalY+'px');
   }
 
   if(cursorMode){
@@ -586,6 +592,14 @@ function updateSignal(time){
 
 finePointer.addEventListener('change',()=>setCursorMode(cursorMode));
 reducedMotion.addEventListener('change',()=>setCursorMode(cursorMode));
+
+setCursorMode(false);
+const initialRect=hero.getBoundingClientRect();
+const initialPoint=getTrajectoryPoint(0,initialRect.width,initialRect.height);
+signalX=initialPoint.x;
+signalY=initialPoint.y;
+hero.style.setProperty('--signal-x',signalX+'px');
+hero.style.setProperty('--signal-y',signalY+'px');
 requestAnimationFrame(updateSignal);
 </script>
 </body>
