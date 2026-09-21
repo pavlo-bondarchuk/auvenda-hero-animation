@@ -19,6 +19,17 @@
 <animate attributeName="cy" values="70;110;155;220" keyTimes="0;0.3;0.62;1" dur="9.5s" begin="1.8s" repeatCount="indefinite"/>
 <animate attributeName="r" values="82;118;132;94" keyTimes="0;0.3;0.62;1" dur="9.5s" begin="1.8s" repeatCount="indefinite"/>
 </radialGradient>
+<radialGradient id="signalCoreA" cx="190" cy="70" r="26" gradientUnits="userSpaceOnUse">
+<stop offset="0" stop-color="#FFFFFF"/>
+<stop offset="0.16" stop-color="#FFFFFF"/>
+<stop offset="0.38" stop-color="#FFF2C7"/>
+<stop offset="0.62" stop-color="#E5C363"/>
+<stop offset="0.82" stop-color="#A9D1FF" stop-opacity="0.78"/>
+<stop offset="1" stop-color="#A9D1FF" stop-opacity="0"/>
+<animate attributeName="cx" values="190;330;520;690" keyTimes="0;0.3;0.62;1" dur="9.5s" begin="1.8s" repeatCount="indefinite"/>
+<animate attributeName="cy" values="70;110;155;220" keyTimes="0;0.3;0.62;1" dur="9.5s" begin="1.8s" repeatCount="indefinite"/>
+<animate attributeName="r" values="26;34;38;28" keyTimes="0;0.3;0.62;1" dur="9.5s" begin="1.8s" repeatCount="indefinite"/>
+</radialGradient>
 <radialGradient id="signalGlowB" cx="650" cy="25" r="74" gradientUnits="userSpaceOnUse">
 <stop offset="0" stop-color="#FFFFFF"/>
 <stop offset="0.1" stop-color="#EAF5FF"/>
@@ -34,6 +45,9 @@
 <use href="#pattern-signal-shape" fill="url(#paint0_radial_91_91)" fill-opacity="0.68" style="mix-blend-mode:overlay"/>
 <use class="signal-glow" href="#pattern-signal-shape" fill="url(#signalGlowA)" opacity="0" style="mix-blend-mode:screen">
 <animate attributeName="opacity" values="0;0;1;1;0.75;0" keyTimes="0;0.08;0.17;0.58;0.82;1" dur="9.5s" begin="1.8s" repeatCount="indefinite"/>
+</use>
+<use class="signal-glow" href="#pattern-signal-shape" fill="url(#signalCoreA)" opacity="0" style="mix-blend-mode:screen">
+<animate attributeName="opacity" values="0;0;1;1;0.9;0" keyTimes="0;0.08;0.16;0.56;0.8;1" dur="9.5s" begin="1.8s" repeatCount="indefinite"/>
 </use>
 <use class="signal-glow" href="#pattern-signal-shape" fill="url(#signalGlowB)" opacity="0" style="mix-blend-mode:screen">
 <animate attributeName="opacity" values="0;0;0.78;0.72;0.5;0" keyTimes="0;0.1;0.2;0.58;0.82;1" dur="12.5s" begin="5s" repeatCount="indefinite"/>
