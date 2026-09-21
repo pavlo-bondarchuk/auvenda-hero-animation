@@ -14,8 +14,7 @@
   --ink:#09141c;
   --white:#fff;
   --container-max:1240px;
-  --pattern:url("./pattern-animated.svg");
-  --pattern-static:url("https://raw.githubusercontent.com/tcsavant/maritime-training-platform-landing/main/assets/auvenida/pattern.svg");
+  --pattern:url("https://raw.githubusercontent.com/tcsavant/maritime-training-platform-landing/main/assets/auvenida/pattern.svg");
 }
 
 @font-face{
@@ -98,6 +97,9 @@ button{font:inherit}
 .brand-header .menu-button{display:none}
 
 .hero{
+  --signal-x:50%;
+  --signal-y:50%;
+  --signal-opacity:1;
   height:100vh;
   min-height:750px;
   display:flex;
@@ -109,9 +111,38 @@ button{font:inherit}
   background:#1e4a66 var(--pattern) center/cover no-repeat;
 }
 
+.hero::before,
+.hero::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+}
+
+.hero::before{
+  z-index:0;
+  background:radial-gradient(ellipse 250px 200px at var(--signal-x) var(--signal-y),rgba(6,22,34,.38) 0,rgba(6,22,34,.3) 25%,rgba(6,22,34,.14) 48%,rgba(6,22,34,0) 74%);
+  opacity:calc(.9 * var(--signal-opacity));
+}
+
+.hero::after{
+  z-index:1;
+  background:radial-gradient(ellipse 190px 145px at var(--signal-x) var(--signal-y),rgba(255,255,255,1) 0 3%,rgba(255,247,218,1) 5%,rgba(229,195,99,1) 10%,rgba(169,209,255,.98) 22%,rgba(169,209,255,.52) 38%,rgba(169,209,255,.18) 52%,transparent 68%);
+  -webkit-mask-image:var(--pattern);
+  mask-image:var(--pattern);
+  -webkit-mask-position:center;
+  mask-position:center;
+  -webkit-mask-size:cover;
+  mask-size:cover;
+  -webkit-mask-repeat:no-repeat;
+  mask-repeat:no-repeat;
+  mix-blend-mode:screen;
+  opacity:var(--signal-opacity);
+}
+
 .hero-grid{
   position:relative;
-  z-index:1;
+  z-index:2;
   display:grid;
   grid-template-columns:minmax(0,1fr);
   align-items:end;
@@ -130,6 +161,80 @@ button{font:inherit}
 .button-secondary{border-color:rgba(255,255,255,.72);color:#fff;background:rgba(255,255,255,.04)}
 .button-secondary:hover{color:var(--navy);background:#fff;border-color:#fff}
 .button span{font-size:17px}
+
+.cursor-toggle{
+  position:fixed;
+  top:50%;
+  right:0;
+  z-index:120;
+  min-height:44px;
+  padding:14px 10px;
+  border:1px solid rgba(255,255,255,.35);
+  border-right:0;
+  color:#fff;
+  background:rgba(17,41,62,.94);
+  writing-mode:vertical-rl;
+  transform:translateY(-50%);
+  cursor:pointer;
+  font-size:11px;
+  font-weight:700;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+}
+
+.cursor-toggle[aria-pressed="true"]{
+  color:var(--navy);
+  background:var(--gold);
+  border-color:var(--gold);
+}
+
+.cursor-jelly{
+  position:fixed;
+  top:0;
+  left:0;
+  z-index:130;
+  width:46px;
+  height:40px;
+  pointer-events:none;
+  opacity:0;
+  transform:translate3d(-100px,-100px,0);
+  transition:opacity .18s ease;
+}
+
+.cursor-jelly-shape{
+  position:absolute;
+  left:50%;
+  top:50%;
+  width:34px;
+  height:27px;
+  transform:translate(-50%,-50%);
+  border:1px solid rgba(255,255,255,.9);
+  border-radius:52% 48% 56% 44% / 58% 62% 38% 42%;
+  background:radial-gradient(circle at 38% 30%,#fff 0 8%,#fff4cf 16%,rgba(229,195,99,.9) 30%,rgba(169,209,255,.72) 56%,rgba(169,209,255,.16) 76%,rgba(169,209,255,0) 100%);
+  box-shadow:0 0 0 1px rgba(169,209,255,.16),0 0 16px rgba(169,209,255,.34);
+  animation:jellyMorph 1.7s ease-in-out infinite alternate;
+}
+
+.cursor-jelly-shape::after{
+  content:"";
+  position:absolute;
+  left:50%;
+  bottom:-7px;
+  width:2px;
+  height:10px;
+  border-radius:999px;
+  background:rgba(169,209,255,.72);
+  box-shadow:-8px 2px 0 rgba(169,209,255,.54),8px 1px 0 rgba(229,195,99,.46);
+  transform:translateX(-50%);
+}
+
+body.cursor-glow-enabled .hero{cursor:none}
+body.cursor-glow-enabled .cursor-jelly.is-visible{opacity:1}
+
+@keyframes jellyMorph{
+  0%{transform:translate(-50%,-50%) scale(1,.92) rotate(-3deg);border-radius:52% 48% 56% 44% / 58% 62% 38% 42%}
+  100%{transform:translate(-50%,-50%) scale(.94,1.08) rotate(3deg);border-radius:45% 55% 47% 53% / 63% 53% 47% 37%}
+}
 
 @media(max-width:800px){
   :root{--mobile-header-height:66px}
@@ -159,6 +264,7 @@ button{font:inherit}
   .brand-header .menu-button[aria-expanded="true"] span:last-child{transform:translateY(-7px) rotate(-45deg)}
   .hero{height:auto;min-height:fit-content;padding:40px 0}
   .hero-grid{padding-block:40px}
+  .cursor-toggle{display:none}
 }
 
 @media(max-width:380px){
@@ -167,7 +273,8 @@ button{font:inherit}
 }
 
 @media(prefers-reduced-motion:reduce){
-  .hero{background-image:var(--pattern-static)}
+  .hero::before,.hero::after,.cursor-toggle,.cursor-jelly{display:none}
+  .cursor-jelly-shape{animation:none}
 }
 </style>
 </head>
@@ -202,6 +309,8 @@ button{font:inherit}
     </div>
   </div>
 </header>
+<button class="cursor-toggle" type="button" aria-pressed="false" aria-label="Enable cursor glow">Cursor glow</button>
+<div class="cursor-jelly" aria-hidden="true"><span class="cursor-jelly-shape"></span></div>
 <main id="content">
   <section class="hero" id="top">
     <div class="container hero-grid">
@@ -255,6 +364,103 @@ languageButtons.forEach(button=>button.addEventListener('click',event=>{
 document.addEventListener('click',event=>{
   if(!languageSwitcher.contains(event.target)) languageSwitcher.classList.remove('is-open');
 });
+
+const hero=document.querySelector('.hero');
+const heroCopy=document.querySelector('.hero-copy');
+const cursorToggle=document.querySelector('.cursor-toggle');
+const cursorJelly=document.querySelector('.cursor-jelly');
+const reducedMotion=window.matchMedia('(prefers-reduced-motion: reduce)');
+const finePointer=window.matchMedia('(pointer: fine)');
+let cursorMode=false;
+let pointerInside=false;
+let targetPointerX=window.innerWidth*.5;
+let targetPointerY=window.innerHeight*.5;
+let jellyX=targetPointerX;
+let jellyY=targetPointerY;
+let signalX=0;
+let signalY=0;
+let lastTime=performance.now();
+
+function setCursorMode(enabled){
+  cursorMode=enabled&&finePointer.matches&&!reducedMotion.matches;
+  document.body.classList.toggle('cursor-glow-enabled',cursorMode);
+  cursorToggle.setAttribute('aria-pressed',String(cursorMode));
+  cursorToggle.setAttribute('aria-label',cursorMode?'Disable cursor glow':'Enable cursor glow');
+  cursorToggle.textContent=cursorMode?'Auto glow':'Cursor glow';
+  if(!cursorMode){
+    pointerInside=false;
+    cursorJelly.classList.remove('is-visible');
+  }
+}
+
+cursorToggle.addEventListener('click',()=>setCursorMode(!cursorMode));
+
+hero.addEventListener('pointerenter',event=>{
+  pointerInside=true;
+  targetPointerX=event.clientX;
+  targetPointerY=event.clientY;
+  if(cursorMode) cursorJelly.classList.add('is-visible');
+});
+
+hero.addEventListener('pointermove',event=>{
+  targetPointerX=event.clientX;
+  targetPointerY=event.clientY;
+});
+
+hero.addEventListener('pointerleave',()=>{
+  pointerInside=false;
+  cursorJelly.classList.remove('is-visible');
+});
+
+function updateSignal(time){
+  if(reducedMotion.matches) return requestAnimationFrame(updateSignal);
+
+  const heroRect=hero.getBoundingClientRect();
+  const copyRect=heroCopy.getBoundingClientRect();
+  let targetX;
+  let targetY;
+
+  if(cursorMode&&pointerInside){
+    targetX=Math.max(0,Math.min(heroRect.width,targetPointerX-heroRect.left));
+    targetY=Math.max(0,Math.min(heroRect.height,targetPointerY-heroRect.top));
+  }else{
+    const elapsed=time*.00016;
+    const centerX=Math.min(heroRect.width*.44,copyRect.left-heroRect.left+Math.min(copyRect.width*.46,520));
+    const centerY=copyRect.top-heroRect.top+copyRect.height*.5;
+    const radiusX=Math.min(heroRect.width*.34,520);
+    const radiusY=Math.min(heroRect.height*.34,285);
+    targetX=centerX+Math.cos(elapsed*Math.PI*2)*radiusX;
+    targetY=centerY+Math.sin(elapsed*Math.PI*2)*radiusY;
+  }
+
+  if(!signalX&&!signalY){
+    signalX=targetX;
+    signalY=targetY;
+  }
+
+  const follow=cursorMode?.115:.065;
+  signalX+=(targetX-signalX)*follow;
+  signalY+=(targetY-signalY)*follow;
+  hero.style.setProperty('--signal-x',signalX+'px');
+  hero.style.setProperty('--signal-y',signalY+'px');
+
+  if(cursorMode&&pointerInside){
+    jellyX+=(targetPointerX-jellyX)*.18;
+    jellyY+=(targetPointerY-jellyY)*.18;
+    const dx=targetPointerX-jellyX;
+    const dy=targetPointerY-jellyY;
+    const angle=Math.max(-10,Math.min(10,dx*.12));
+    const stretch=Math.max(.92,Math.min(1.12,1+Math.hypot(dx,dy)*.002));
+    cursorJelly.style.transform='translate3d('+(jellyX-23)+'px,'+(jellyY-20)+'px,0) rotate('+angle+'deg) scale('+stretch+',1)';
+  }
+
+  lastTime=time;
+  requestAnimationFrame(updateSignal);
+}
+
+finePointer.addEventListener('change',()=>setCursorMode(cursorMode));
+reducedMotion.addEventListener('change',()=>setCursorMode(cursorMode));
+requestAnimationFrame(updateSignal);
 </script>
 </body>
 </html>
