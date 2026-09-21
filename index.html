@@ -100,6 +100,11 @@ button{font:inherit}
   --signal-x:50%;
   --signal-y:50%;
   --signal-opacity:1;
+  --pattern-size:100% 100%;
+  --shadow-w:760px;
+  --shadow-h:560px;
+  --glow-w:210px;
+  --glow-h:165px;
   height:100vh;
   min-height:750px;
   display:flex;
@@ -108,7 +113,7 @@ button{font:inherit}
   position:relative;
   isolation:isolate;
   color:#fff;
-  background:#1e4a66 var(--pattern) center/cover no-repeat;
+  background:#1e4a66 var(--pattern) center/var(--pattern-size) no-repeat;
 }
 
 .hero::before,
@@ -122,7 +127,7 @@ button{font:inherit}
 .hero::before{
   z-index:0;
   background:radial-gradient(
-    ellipse 760px 560px at var(--signal-x) var(--signal-y),
+    ellipse var(--shadow-w) var(--shadow-h) at var(--signal-x) var(--signal-y),
     rgba(4,16,27,.28) 0,
     rgba(4,16,27,.25) 14%,
     rgba(4,16,27,.2) 30%,
@@ -136,13 +141,13 @@ button{font:inherit}
 
 .hero::after{
   z-index:1;
-  background:radial-gradient(ellipse 190px 145px at var(--signal-x) var(--signal-y),rgba(255,255,255,1) 0 3%,rgba(255,247,218,1) 5%,rgba(229,195,99,1) 10%,rgba(169,209,255,.98) 22%,rgba(169,209,255,.52) 38%,rgba(169,209,255,.18) 52%,transparent 68%);
+  background:radial-gradient(ellipse var(--glow-w) var(--glow-h) at var(--signal-x) var(--signal-y),rgba(255,255,255,.96) 0 2.5%,rgba(255,247,218,.92) 5%,rgba(229,195,99,.88) 12%,rgba(169,209,255,.82) 26%,rgba(169,209,255,.42) 44%,rgba(169,209,255,.16) 60%,transparent 76%);
   -webkit-mask-image:var(--pattern);
   mask-image:var(--pattern);
   -webkit-mask-position:center;
   mask-position:center;
-  -webkit-mask-size:cover;
-  mask-size:cover;
+  -webkit-mask-size:var(--pattern-size);
+  mask-size:var(--pattern-size);
   -webkit-mask-repeat:no-repeat;
   mask-repeat:no-repeat;
   mix-blend-mode:screen;
@@ -256,10 +261,29 @@ body.cursor-glow-enabled .cursor-orb.is-visible{opacity:1}
   .brand-header .menu-button[aria-expanded="true"] span:first-child{transform:translateY(7px) rotate(45deg)}
   .brand-header .menu-button[aria-expanded="true"] span:nth-child(2){opacity:0}
   .brand-header .menu-button[aria-expanded="true"] span:last-child{transform:translateY(-7px) rotate(-45deg)}
-  .hero{height:auto;min-height:fit-content;padding:40px 0}
+  .hero{
+    --shadow-w:118vw;
+    --shadow-h:92vw;
+    --glow-w:38vw;
+    --glow-h:30vw;
+    --pattern-size:100% 100%;
+    height:auto;
+    min-height:max(640px,calc(100svh - 66px));
+    padding:40px 0;
+    background-position:center
+  }
   .hero-grid{padding-block:40px}
   .cursor-toggle{display:none}
   .cursor-orb{display:none}
+}
+
+@media(max-width:480px){
+  .hero{
+    --shadow-w:128vw;
+    --shadow-h:104vw;
+    --glow-w:44vw;
+    --glow-h:36vw;
+  }
 }
 
 @media(max-width:380px){
@@ -375,6 +399,9 @@ let jellyY=targetPointerY;
 let signalX=0;
 let signalY=0;
 let lastPaint=0;
+let lastFrame=performance.now();
+let spiralAngle=0;
+let spiralPhase=0;
 
 function setCursorMode(enabled){
   cursorMode=enabled&&finePointer.matches&&!reducedMotion.matches;
@@ -410,6 +437,8 @@ hero.addEventListener('pointerleave',()=>{
 function updateSignal(time){
   if(reducedMotion.matches) return requestAnimationFrame(updateSignal);
 
+  const deltaSec=Math.min(.05,Math.max(.001,(time-lastFrame)/1000));
+  lastFrame=time;
   const heroRect=hero.getBoundingClientRect();
   const frameInterval=cursorMode?16:32;
   const heroVisible=heroRect.bottom>0&&heroRect.top<window.innerHeight;
@@ -442,13 +471,32 @@ function updateSignal(time){
     targetX=Math.max(0,Math.min(heroRect.width,targetPointerX-heroRect.left));
     targetY=Math.max(0,Math.min(heroRect.height,targetPointerY-heroRect.top));
   }else{
-    const elapsed=time*.000085;
+    const safeX=heroRect.width*.05;
+    const safeY=heroRect.height*.05;
     const centerX=(contentLeft+contentRight)*.5-heroRect.left;
     const centerY=(contentTop+contentBottom)*.5-heroRect.top;
-    const radiusX=Math.min(heroRect.width*.37,(contentRight-contentLeft)*.5+110);
-    const radiusY=Math.min(heroRect.height*.36,(contentBottom-contentTop)*.5+72);
-    targetX=Math.max(88,Math.min(heroRect.width-88,centerX+Math.cos(elapsed*Math.PI*2)*radiusX));
-    targetY=Math.max(88,Math.min(heroRect.height-88,centerY+Math.sin(elapsed*Math.PI*2)*radiusY));
+    const availableLeft=Math.max(32,centerX-safeX);
+    const availableRight=Math.max(32,heroRect.width-safeX-centerX);
+    const availableTop=Math.max(32,centerY-safeY);
+    const availableBottom=Math.max(32,heroRect.height-safeY-centerY);
+    const maxRadiusX=Math.max(32,Math.min(availableLeft,availableRight,heroRect.width*.42));
+    const maxRadiusY=Math.max(32,Math.min(availableTop,availableBottom,heroRect.height*.4));
+    const minRadiusX=maxRadiusX*.18;
+    const minRadiusY=maxRadiusY*.18;
+
+    spiralPhase=(spiralPhase+deltaSec*.24)%(Math.PI*2);
+    const wave=.5-.5*Math.cos(spiralPhase);
+    const eased=wave*wave*(3-2*wave);
+    const centerSlow=.38+.62*eased;
+    spiralAngle+=deltaSec*(.46+1.08*centerSlow);
+
+    const radiusX=minRadiusX+(maxRadiusX-minRadiusX)*eased;
+    const radiusY=minRadiusY+(maxRadiusY-minRadiusY)*eased;
+
+    targetX=centerX+Math.cos(spiralAngle)*radiusX;
+    targetY=centerY+Math.sin(spiralAngle)*radiusY;
+    targetX=Math.max(safeX,Math.min(heroRect.width-safeX,targetX));
+    targetY=Math.max(safeY,Math.min(heroRect.height-safeY,targetY));
   }
 
   if(!signalX&&!signalY){
@@ -456,7 +504,8 @@ function updateSignal(time){
     signalY=targetY;
   }
 
-  const follow=cursorMode ? .095 : .065;
+  const isMobile=window.innerWidth<=800;
+  const follow=cursorMode ? .095 : (isMobile ? .08 : .06);
   signalX+=(targetX-signalX)*follow;
   signalY+=(targetY-signalY)*follow;
   hero.style.setProperty('--signal-x',signalX+'px');
