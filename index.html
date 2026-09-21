@@ -517,13 +517,13 @@ hero.addEventListener('pointerleave',()=>{
 
 function updateSignal(time){
   if(!lastFrame) lastFrame=time;
-  const deltaSec=Math.min(.05,Math.max(.001,(time-lastFrame)/1000));
-  lastFrame=time;
 
   if(reducedMotion.matches){
+    lastFrame=time;
     requestAnimationFrame(updateSignal);
     return;
   }
+
   const heroRect=hero.getBoundingClientRect();
   const frameInterval=cursorMode?16:32;
   const heroVisible=heroRect.bottom>0&&heroRect.top<window.innerHeight;
@@ -533,6 +533,8 @@ function updateSignal(time){
     return;
   }
 
+  const deltaSec=Math.min(.05,Math.max(.001,(time-lastFrame)/1000));
+  lastFrame=time;
   lastPaint=time;
   let targetX;
   let targetY;
