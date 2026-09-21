@@ -400,8 +400,89 @@ let signalX=0;
 let signalY=0;
 let lastPaint=0;
 let lastFrame=performance.now();
-let spiralAngle=0;
-let spiralPhase=0;
+let pathDistance=0;
+let trajectoryCache=null;
+
+const trajectoryPoints=[
+  [.07,.11],[.11,.06],[.17,.13],[.24,.14],[.28,.16],[.29,.25],
+  [.36,.27],[.41,.31],[.47,.30],[.53,.36],[.60,.39],[.68,.32],
+  [.74,.21],[.82,.16],[.86,.18],[.86,.29],[.82,.41],[.83,.49],
+  [.88,.57],[.94,.56],[.96,.64],[.95,.76],[.89,.85],[.79,.91],
+  [.69,.89],[.59,.82],[.49,.75],[.43,.73],[.35,.82],[.25,.93],
+  [.15,.94],[.10,.87],[.09,.74],[.10,.60],[.14,.50],[.13,.39],
+  [.09,.30],[.05,.23]
+];
+
+function catmullRom(p0,p1,p2,p3,t){
+  const t2=t*t;
+  const t3=t2*t;
+  return [
+    .5*((2*p1[0])+(-p0[0]+p2[0])*t+(2*p0[0]-5*p1[0]+4*p2[0]-p3[0])*t2+(-p0[0]+3*p1[0]-3*p2[0]+p3[0])*t3),
+    .5*((2*p1[1])+(-p0[1]+p2[1])*t+(2*p0[1]-5*p1[1]+4*p2[1]-p3[1])*t2+(-p0[1]+3*p1[1]-3*p2[1]+p3[1])*t3)
+  ];
+}
+
+function buildTrajectory(width,height){
+  const samples=[];
+  const segments=trajectoryPoints.length;
+  const steps=18;
+  let total=0;
+  let previous=null;
+
+  for(let i=0;i<segments;i++){
+    const p0=trajectoryPoints[(i-1+segments)%segments];
+    const p1=trajectoryPoints[i];
+    const p2=trajectoryPoints[(i+1)%segments];
+    const p3=trajectoryPoints[(i+2)%segments];
+
+    for(let s=0;s<steps;s++){
+      const t=s/steps;
+      const point=catmullRom(p0,p1,p2,p3,t);
+      const x=Math.max(width*.05,Math.min(width*.95,point[0]*width));
+      const y=Math.max(height*.05,Math.min(height*.95,point[1]*height));
+
+      if(previous) total+=Math.hypot(x-previous.x,y-previous.y);
+      const sample={x,y,d:total};
+      samples.push(sample);
+      previous=sample;
+    }
+  }
+
+  const first=samples[0];
+  total+=Math.hypot(first.x-previous.x,first.y-previous.y);
+  samples.push({x:first.x,y:first.y,d:total});
+
+  return {width,height,total,samples};
+}
+
+function getTrajectoryPoint(distance,width,height){
+  if(!trajectoryCache||trajectoryCache.width!==width||trajectoryCache.height!==height){
+    trajectoryCache=buildTrajectory(width,height);
+    pathDistance%=trajectoryCache.total;
+  }
+
+  const total=trajectoryCache.total;
+  const d=((distance%total)+total)%total;
+  const samples=trajectoryCache.samples;
+  let low=0;
+  let high=samples.length-1;
+
+  while(low<high){
+    const mid=(low+high)>>1;
+    if(samples[mid].d<d) low=mid+1;
+    else high=mid;
+  }
+
+  const next=samples[Math.max(1,low)];
+  const prev=samples[Math.max(0,low-1)];
+  const span=Math.max(.0001,next.d-prev.d);
+  const mix=(d-prev.d)/span;
+
+  return {
+    x:prev.x+(next.x-prev.x)*mix,
+    y:prev.y+(next.y-prev.y)*mix
+  };
+}
 
 function setCursorMode(enabled){
   cursorMode=enabled&&finePointer.matches&&!reducedMotion.matches;
@@ -471,32 +552,11 @@ function updateSignal(time){
     targetX=Math.max(0,Math.min(heroRect.width,targetPointerX-heroRect.left));
     targetY=Math.max(0,Math.min(heroRect.height,targetPointerY-heroRect.top));
   }else{
-    const safeX=heroRect.width*.05;
-    const safeY=heroRect.height*.05;
-    const centerX=(contentLeft+contentRight)*.5-heroRect.left;
-    const centerY=(contentTop+contentBottom)*.5-heroRect.top;
-    const availableLeft=Math.max(32,centerX-safeX);
-    const availableRight=Math.max(32,heroRect.width-safeX-centerX);
-    const availableTop=Math.max(32,centerY-safeY);
-    const availableBottom=Math.max(32,heroRect.height-safeY-centerY);
-    const maxRadiusX=Math.max(32,Math.min(availableLeft,availableRight,heroRect.width*.42));
-    const maxRadiusY=Math.max(32,Math.min(availableTop,availableBottom,heroRect.height*.4));
-    const minRadiusX=maxRadiusX*.18;
-    const minRadiusY=maxRadiusY*.18;
-
-    spiralPhase=(spiralPhase+deltaSec*.24)%(Math.PI*2);
-    const wave=.5-.5*Math.cos(spiralPhase);
-    const eased=wave*wave*(3-2*wave);
-    const centerSlow=.38+.62*eased;
-    spiralAngle+=deltaSec*(.46+1.08*centerSlow);
-
-    const radiusX=minRadiusX+(maxRadiusX-minRadiusX)*eased;
-    const radiusY=minRadiusY+(maxRadiusY-minRadiusY)*eased;
-
-    targetX=centerX+Math.cos(spiralAngle)*radiusX;
-    targetY=centerY+Math.sin(spiralAngle)*radiusY;
-    targetX=Math.max(safeX,Math.min(heroRect.width-safeX,targetX));
-    targetY=Math.max(safeY,Math.min(heroRect.height-safeY,targetY));
+    const trajectory=getTrajectoryPoint(pathDistance,heroRect.width,heroRect.height);
+    const speed=Math.max(92,Math.min(126,heroRect.width*.075));
+    pathDistance+=speed*deltaSec;
+    targetX=trajectory.x;
+    targetY=trajectory.y;
   }
 
   if(!signalX&&!signalY){
@@ -504,10 +564,13 @@ function updateSignal(time){
     signalY=targetY;
   }
 
-  const isMobile=window.innerWidth<=800;
-  const follow=cursorMode ? .095 : (isMobile ? .08 : .06);
-  signalX+=(targetX-signalX)*follow;
-  signalY+=(targetY-signalY)*follow;
+  if(cursorMode){
+    signalX+=(targetX-signalX)*.095;
+    signalY+=(targetY-signalY)*.095;
+  }else{
+    signalX=targetX;
+    signalY=targetY;
+  }
   hero.style.setProperty('--signal-x',signalX+'px');
   hero.style.setProperty('--signal-y',signalY+'px');
 
